@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-template-cache-v1';
+const CACHE_NAME = 'chess-pgn-viewer-cache-v1';
 const CACHE_AT_ONCE = false;
 const assetsToCache = [
   // Core HTML & Manifest
@@ -11,16 +11,13 @@ const assetsToCache = [
   '/assets/css/lib/bootstrap-5.3.2.min.css.map',
 
   // CSS UI & App Specific
-  '/assets/css/ui/datepicker.min.css',
   '/assets/css/ui/switch.min.css',
   '/assets/css/notif.min.css',
-  '/assets/css/TEMPLATE.css',
+  '/assets/css/pgn-viewer.css',
 
   // JS Libraries
   '/assets/js/lib/bootstrap-5.3.2.min.js',
   '/assets/js/lib/bootstrap-5.3.2.min.js.map',
-  '/assets/js/lib/bootstrap-datepicker-1.10.0.min.js',
-  '/assets/js/lib/bootstrap-datepicker-1.10.0.min.js.map',
   '/assets/js/lib/dropbox-sdk-10.34.0.min.js',
   '/assets/js/lib/clipboard-2.0.11.min.js',
   '/assets/js/lib/clipboard-2.0.11.min.js.map',
@@ -39,13 +36,12 @@ const assetsToCache = [
 
   // JS App Specific
   '/assets/js/cache.js',
-  '/assets/js/datepicker.js',
   '/assets/js/logging.js',
   '/assets/js/notif-flash.min.js',
   '/assets/js/notif.js',
   '/assets/js/switch.js',
   '/assets/js/sync-coordinator.js',
-  '/assets/js/TEMPLATE.js',
+  '/assets/js/pgn-viewer.js',
   '/assets/js/locales.js',
 
   // JS Storage Module
@@ -65,12 +61,12 @@ const assetsToCache = [
   '/assets/locales/it/translation.json',
   '/assets/locales/ja/translation.json',
 
-  '/img/icons/pwa-template.ico',
-  '/img/icons/pwa-template-32x32.png',
-  '/img/icons/pwa-template-180x180.png',
-  '/img/icons/pwa-template-192x192.png',
-  '/img/icons/pwa-template-512x512.png',
-  '/img/icons/pwa-template-512x512-maskable.png'
+  '/img/icons/chess-pgn-viewer.ico',
+  '/img/icons/chess-pgn-viewer-32x32.png',
+  '/img/icons/chess-pgn-viewer-180x180.png',
+  '/img/icons/chess-pgn-viewer-192x192.png',
+  '/img/icons/chess-pgn-viewer-512x512.png',
+  '/img/icons/chess-pgn-viewer-512x512-maskable.png'
 ];
 
 // Function to cache assets

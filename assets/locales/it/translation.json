@@ -1,35 +1,35 @@
 {
-  "pageTitle": "Template PWA",
+  "app": {
+    "title": "Visualizzatore PGN Scacchi"
+  },
   "sidebar": {
-    "title": "File",
+    "pgnFilesTitle": "File PGN",
     "button": {
-      "import": "Importa File dal Disco",
-      "add": "Aggiungi Nuovo File",
-      "rename": "Rinomina File Corrente",
-      "delete": "Elimina File Corrente"
+      "importPgn": "Importa File PGN dal Disco",
+      "addPgn": "Aggiungi Nuovo File PGN",
+      "renamePgn": "Rinomina File PGN Corrente",
+      "deletePgn": "Elimina File PGN Corrente"
     },
-    "loadingFiles": "Caricamento file..."
+    "loadingPgnFiles": "Caricamento file PGN..."
   },
   "main": {
     "header": {
-      "currentFile": "File Corrente",
+      "loadedPgn": "PGN Caricato",
       "syncStatusTitle": "Stato Sincronizzazione",
       "dropboxConnectTitle": "Connetti a Dropbox",
       "helpTitle": "Aiuto"
-    },
-    "content": {
-      "primaryColor": {
-        "title": "Colore Primario",
-        "datepickerLabel": "Esempio Datepicker:",
-        "switchLabel": "Esempio Switch:",
-        "button": "Notifica Primaria"
-      },
-      "complementaryColor": {
-        "title": "Colore Complementare",
-        "datepickerLabel": "Esempio Datepicker:",
-        "switchLabel": "Esempio Switch:",
-        "button": "Notifica Complementare"
-      }
+    }
+  },
+  "pgnViewer": {
+    "pgnInputLabel": "Input PGN:",
+    "pgnInputPlaceholder": "Incolla PGN qui...",
+    "button": {
+      "flip": "Capovolgi Scacchiera",
+      "cyclePieces": "Cambia Set Pezzi",
+      "start": "Vai all'Inizio",
+      "previous": "Mossa Precedente",
+      "next": "Mossa Successiva",
+      "end": "Vai alla Fine"
     }
   },
   "modal": {
@@ -47,61 +47,96 @@
         "keepDropbox": "Mantieni Dropbox (Sovrascrivi Locale)"
       }
     },
-    "addFile": {
-      "title": "Aggiungi Nuovo File",
+    "addPgnFile": {
+      "title": "Aggiungi Nuovo File PGN",
       "fileNameLabel": "Nome File:",
-      "fileNamePlaceholder": "es., lavoro.txt",
-      "fileNameHelp": "Deve terminare con .txt (verrà aggiunto se mancante).",
+      "fileNamePlaceholder": "es., kasparov_deep_blue.pgn",
+      "fileNameHelp": "Deve terminare con .pgn (verrà aggiunto se mancante).",
       "button": {
-        "add": "Aggiungi File"
+        "add": "Aggiungi File PGN"
       }
     },
-    "renameFile": {
-      "title": "Rinomina File",
+    "renamePgnFile": {
+      "title": "Rinomina File PGN",
       "body": {
         "renamingLabel": "Rinominando: "
       },
       "newFileNameLabel": "Nuovo Nome File:",
-      "newFileNamePlaceholder": "es., lavoro_aggiornato.txt",
-      "newFileNameHelp": "Deve terminare con .txt (verrà aggiunto se mancante). Non è possibile rinominare con un nome file esistente.",
+      "newFileNamePlaceholder": "es., kasparov_deep_blue_finale.pgn",
+      "newFileNameHelp": "Deve terminare con .pgn (verrà aggiunto se mancante). Non è possibile rinominare con un nome file esistente.",
       "button": {
-        "rename": "Rinomina File"
+        "rename": "Rinomina File PGN"
       }
     },
-    "deleteFile": {
-      "title": "Conferma Eliminazione File",
+    "deletePgnFile": {
+      "title": "Conferma Eliminazione File PGN",
       "body": {
-        "confirm": "Sei sicuro di voler eliminare il file \"",
+        "confirm": "Sei sicuro di voler eliminare il file PGN \"",
         "warning": "Questa azione non può essere annullata."
       },
       "button": {
-        "delete": "Elimina File"
+        "delete": "Elimina File PGN"
       }
     },
     "button": {
       "cancel": "Annulla"
     }
   },
+  "notification": {
+    "checkmateWhiteWins": "Scacco matto! Vince il Bianco.",
+    "checkmateBlackWins": "Scacco matto! Vince il Nero.",
+    "stalemate": "Stallo! La partita è patta.",
+    "threefoldRepetition": "Patta per ripetizione di posizione.",
+    "draw": "Patta! (Materiale insufficiente o regola delle 50 mosse)",
+    "gameOverTitle": "Partita Finita"
+  },
+  "languageSwitcher": {
+    "header": "Lingua"
+  },
   "helpPage": {
-    "title": "Template PWA - Aiuto",
+    "title": "Visualizzatore PGN Scacchi - Aiuto",
     "header": "Aiuto",
     "button": {
       "backToApp": "Torna all'App"
     },
     "content": {
-      "title": "Aiuto Template PWA",
-      "intro": "Questo documento spiega come utilizzare la Webapp Template PWA."
+      "title": "Aiuto Visualizzatore PGN Scacchi",
+      "intro": "Questo documento spiega come utilizzare la Webapp Visualizzatore PGN Scacchi.",
+      "loading": {
+        "title": "Caricamento di un File PGN",
+        "step1": "Fai clic sul pulsante \"Carica PGN\" (solitamente rappresentato da un'icona a forma di cartella o simile).",
+        "step2": "Seleziona un file `.pgn` dal tuo dispositivo locale utilizzando il browser di file che appare.",
+        "step3": "L'applicazione caricherà la prima partita trovata nel file PGN. Se il PGN contiene più partite, in genere viene visualizzata inizialmente solo la prima (il comportamento potrebbe variare in base all'implementazione)."
+      },
+      "viewing": {
+        "title": "Visualizzazione delle Informazioni sulla Partita",
+        "metadata": "<strong>Metadati:</strong> Una volta caricata una partita, i dettagli come Nomi dei Giocatori (Bianco e Nero), Evento, Luogo, Data, Turno e Risultato vengono visualizzati sopra o accanto alla scacchiera.",
+        "moves": "<strong>Elenco Mosse:</strong> Le mosse della partita sono elencate in Notazione Algebrica Standard (SAN) in un'area scorrevole. La mossa corrente visualizzata sulla scacchiera è solitamente evidenziata."
+      },
+      "navigating": {
+        "title": "Navigazione nella Partita",
+        "intro": "Utilizza i pulsanti di controllo sotto la scacchiera o l'elenco delle mosse:",
+        "first": "<strong>Prima Mossa:</strong> Vai alla posizione iniziale della partita.",
+        "prev": "<strong>Mossa Precedente:</strong> Torna indietro di una mossa.",
+        "next": "<strong>Mossa Successiva:</strong> Avanza di una mossa.",
+        "last": "<strong>Ultima Mossa:</strong> Vai alla posizione finale della partita.",
+        "click": "<strong>Clic sulle Mosse:</strong> Spesso puoi fare clic direttamente su una mossa nell'elenco per passare a quella specifica posizione nella partita."
+      },
+      "board": {
+        "title": "Comprensione della Scacchiera",
+        "visual": "La scacchiera rappresenta visivamente la posizione corrispondente alla mossa attualmente selezionata.",
+        "pieces": "I pezzi vengono visualizzati secondo la rappresentazione standard degli scacchi.",
+        "orientation": "L'orientamento della scacchiera (Bianco in basso o Nero in basso) potrebbe essere configurabile tramite impostazioni (se implementato)."
+      },
+      "offline": {
+        "title": "Uso Offline",
+        "desc": "Questa applicazione è una Progressive Web App (PWA) e utilizza un Service Worker. Dopo aver caricato l'app una volta online, dovrebbe essere disponibile per l'uso offline, consentendo di visualizzare i dati PGN precedentemente caricati o memorizzati nella cache (le capacità offline specifiche dipendono dall'implementazione)."
+      },
+      "troubleshooting": {
+        "title": "Risoluzione dei Problemi",
+        "invalid": "<strong>PGN Non Valido:</strong> Se il file selezionato non è un PGN valido o è danneggiato, l'applicazione potrebbe mostrare un errore o non riuscire a caricare la partita. Assicurati che il tuo file PGN aderisca al formato standard.",
+        "multiple": "<strong>Partite Multiple:</strong> I file PGN standard possono contenere più partite. Questo visualizzatore potrebbe caricare solo la prima partita per impostazione predefinita. Verifica se ci sono opzioni per selezionare altre partite all'interno del file (se implementato)."
+      }
     }
-  },
-  "switch": {
-    "on": "ACCESO",
-    "off": "SPENTO"
-  },
-  "notification": {
-    "disappearingAlert": "Notifica di avviso a scomparsa",
-    "fixedSuccess": "Notifica di successo fissa"
-  },
-  "languageSwitcher": {
-    "header": "Lingua"
   }
 }

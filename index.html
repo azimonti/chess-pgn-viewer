@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="app-version" content="2.0.3">
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'>
-  <link rel="icon" href="/img/icons/pwa-template.ico" type="image/x-icon">
-  <link rel="icon" type="image/png" sizes="32x32" href="/img/icons/pwa-template-32x32.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="/img/icons/pwa-template-192x192.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/img/icons/pwa-template-180x180.png">
-  <meta http-equiv="content-language" content="en-us">
-  <title data-i18n="pageTitle">PWA Template</title>
+  <link rel="icon" href="/img/icons/chess-pgn-viewer.ico" type="image/x-icon">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/icons/chess-pgn-viewer-32x32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/img/icons/chess-pgn-viewer-192x192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/icons/chess-pgn-viewer-180x180.png">
+  <meta http-equiv="content-language" content="en"> <!-- Default to en -->
+  <title data-i18n="app.title">Chess PGN Viewer</title>
   <link rel="manifest" href="/data/json/manifest.json">
   <!-- <link rel="canonical" href="https://www.YOURURL.com/"> -->
+  <meta name="description" content="An offline-first Progressive Web App (PWA) for viewing and analyzing chess PGN files.">
   <link rel="stylesheet" href="/assets/css/lib/bootstrap-5.3.2.min.css">
-  <link rel="stylesheet" href="/assets/css/ui/datepicker.min.css">
   <link rel="stylesheet" href="/assets/css/ui/switch.min.css">
   <link rel="stylesheet" href="/assets/css/notif.min.css">
-  <link rel="stylesheet" href="/assets/css/TEMPLATE.css">
+  <link rel="stylesheet" href="/assets/css/pgn-viewer.css">
   <meta name="description" content="A generic Progressive Web Application (PWA) template with file management and Dropbox integration.">
 </head>
 <body id="page-top">
@@ -26,24 +26,24 @@
     <div class="row">
       <div class="offcanvas offcanvas-start bg-light" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
         <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasSidebarLabel" data-i18n="sidebar.title">Files</h5><button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          <h5 class="offcanvas-title" id="offcanvasSidebarLabel" data-i18n="sidebar.pgnFilesTitle">PGN Files</h5><button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button> <!-- Changed key and default text -->
         </div>
         <div class="offcanvas-body">
           <div class="d-flex justify-content-end mb-2">
-            <label for="importFileDiskInput" class="btn btn-light btn-offcanvas btn-sm me-1" title="Import File from Disk" data-i18n="[title]sidebar.button.import">
+            <label for="importFileDiskInput" class="btn btn-light btn-offcanvas btn-sm me-1" title="Import PGN File from Disk" data-i18n="[title]sidebar.button.importPgn">
               <i class="fa-solid fa-upload"></i>
             </label>
-            <input type="file" id="importFileDiskInput" accept=".txt" style="display: none;">
-            <button type="button" id="addFileButton" class="btn btn-light btn-offcanvas btn-sm" title="Add New File" data-i18n="[title]sidebar.button.add"><i class="fa-solid fa-plus"></i></button>
+            <input type="file" id="importFileDiskInput" accept=".pgn" style="display: none;"> <!-- Accept .pgn -->
+            <button type="button" id="addFileButton" class="btn btn-light btn-offcanvas btn-sm" title="Add New PGN File" data-i18n="[title]sidebar.button.addPgn"><i class="fa-solid fa-plus"></i></button>
           </div>
           <ul class="nav flex-column mb-2" id="fileListSidebar">
             <!-- File list will be populated by JS -->
             <li class="nav-item">
-              <a class="nav-link" href="#" data-i18n="sidebar.loadingFiles">Loading files...</a>
+              <a class="nav-link" href="#" data-i18n="sidebar.loadingPgnFiles">Loading PGN files...</a>
             </li>
           </ul>
           <div class="mt-auto pt-2 border-top d-flex justify-content-start">
-            <button type="button" id="renameFileButton" class="btn btn-light btn-offcanvas btn-sm me-1" title="Rename Current File" data-i18n="[title]sidebar.button.rename"><i class="fa-solid fa-pen-to-square"></i></button> <button type="button" id="deleteFileButton" class="btn btn-light btn-offcanvas btn-sm" title="Delete Current File" data-i18n="[title]sidebar.button.delete"><i class="fa-solid fa-times"></i></button>
+            <button type="button" id="renameFileButton" class="btn btn-light btn-offcanvas btn-sm me-1" title="Rename Current PGN File" data-i18n="[title]sidebar.button.renamePgn"><i class="fa-solid fa-pen-to-square"></i></button> <button type="button" id="deleteFileButton" class="btn btn-light btn-offcanvas btn-sm" title="Delete Current PGN File" data-i18n="[title]sidebar.button.deletePgn"><i class="fa-solid fa-times"></i></button>
           </div>
         </div>
       </div>
@@ -51,7 +51,7 @@
         <div class="pt-3 pb-2 mb-3 border-bottom d-flex justify-content-between align-items-center flex-wrap">
           <div class="d-flex align-items-center me-3 mb-2 mb-md-0">
             <button class="btn btn-light me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar" aria-label="Toggle sidebar"><i class="fa-solid fa-bars"></i></button>
-            <h1 class="h2 mb-0" id="currentFileNameHeader" data-i18n="main.header.currentFile">Current File</h1>
+            <h1 class="h2 mb-0" id="currentFileNameHeader" data-i18n="main.header.loadedPgn">Loaded PGN</h1>
           </div>
           <div class="d-flex align-items-center">
             <!-- Language Switcher Dropdown -->
@@ -72,60 +72,72 @@
             <a href="help/" class="btn btn-light btn-fa p-1" title="Help" data-i18n="[title]main.header.helpTitle" style="line-height: 1;"><i class="fa-solid fa-question-circle fs-6 align-middle" style="color: #0083B3;"></i></a>
           </div>
         </div>
-        <!-- Main content area for the template -->
-        <div id="main-content-area" class="mt-3">
-
-          <!-- Primary Color Block -->
-          <div class="mb-4 p-3 border rounded">
-            <h5 data-i18n="main.content.primaryColor.title">Primary Color</h5>
-            <div class="mb-3" style="max-width: 200px;">
-              <div class="datepicker-container">
-                <div class="form-group">
-                  <label for="exampleDatepicker1" data-i18n="main.content.primaryColor.datepickerLabel">Example Datepicker:</label>
-                  <input type="text" class="form-control date-picker" id="exampleDatepicker1" data-datepicker-color="primary">
-                </div>
+        <!-- Main content area -->
+        <div id="pgn-viewer-container" class="row">
+          <!-- Chessboard Area -->
+          <div id="chessboard-container" class="col-lg-7 col-xl-6 col-12 mb-3 mb-md-0"> <!-- Adjusted columns for potentially wider boards -->
+            <div id="chessboard">
+              <!-- Indices -->
+              <div class="indices rank">
+                <span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span>
               </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label" data-i18n="main.content.primaryColor.switchLabel">Example Switch:</label>
-              <div class="d-flex align-items-center">
-                <div class="form-check form-switch">
-                  <input class="form-check-input switch-primary" type="checkbox" role="switch" id="switch1" data-checked="ON" data-unchecked="OFF">
-                  <label class="form-check-label ms-2" for="switch1"></label> <!-- Switch label is handled by notif.js -->
-                </div>
+              <div class="indices file">
+                <span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span>
               </div>
-            </div>
-            <div class="mb-3">
-              <button type="button" class="btn btn-primary" onclick="showPrimaryNotification()" data-i18n="main.content.primaryColor.button">Primary Notification</button>
+              <!-- Board Grid -->
+              <div class="board-grid">
+                <!-- Row 8 -->
+                <div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div>
+                <!-- Row 7 -->
+                <div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div>
+                <!-- Row 6 -->
+                <div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div>
+                <!-- Row 5 -->
+                <div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div>
+                <!-- Row 4 -->
+                <div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div>
+                <!-- Row 3 -->
+                <div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div>
+                <!-- Row 2 -->
+                <div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div>
+                <!-- Row 1 -->
+                <div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div>
+              </div>
             </div>
           </div>
 
-          <!-- Complementary Color Block -->
-          <div class="mb-4 p-3 border rounded">
-            <h5 data-i18n="main.content.complementaryColor.title">Complementary Color</h5>
-            <div class="mb-3" style="max-width: 200px;">
-              <div class="datepicker-container">
-                <div class="form-group">
-                  <label for="exampleDatepicker2" data-i18n="main.content.complementaryColor.datepickerLabel">Example Datepicker:</label>
-                  <input type="text" class="form-control date-picker" id="exampleDatepicker2" data-datepicker-color="complementary">
-                </div>
+          <!-- PGN Input and Controls Area -->
+          <div id="pgn-controls-container" class="col-lg-5 col-xl-6 col-12"> <!-- Adjusted columns -->
+            <div class="mb-3">
+              <label for="pgn-input" class="form-label" data-i18n="pgnViewer.pgnInputLabel">PGN Input:</label>
+              <textarea class="form-control" id="pgn-input" rows="10" placeholder="Paste PGN here..." data-i18n="[placeholder]pgnViewer.pgnInputPlaceholder"></textarea>
+            </div>
+            <div class="d-flex justify-content-between align-items-center flex-wrap"> <!-- Added flex-wrap -->
+              <div>
+                <button class="btn btn-light me-1" id="btn-flip-board" title="Flip Board" data-i18n="[title]pgnViewer.button.flip">
+                  <i class="fa-solid fa-rotate"></i>
+                </button>
+                <button class="btn btn-light me-1" id="btn-cycle-pieces" title="Cycle Piece Set" data-i18n="[title]pgnViewer.button.cyclePieces">
+                  <i class="fa-solid fa-chess"></i>
+                </button>
+              </div>
+              <div>
+                <button class="btn btn-light me-1" id="btn-start" title="Go to Start" data-i18n="[title]pgnViewer.button.start">
+                  <i class="fa-solid fa-angles-left"></i>
+                </button>
+                <button class="btn btn-light me-1" id="btn-prev" title="Previous Move" data-i18n="[title]pgnViewer.button.previous">
+                  <i class="fa-solid fa-angle-left"></i>
+                </button>
+                <button class="btn btn-light me-1" id="btn-next" title="Next Move" data-i18n="[title]pgnViewer.button.next">
+                  <i class="fa-solid fa-angle-right"></i>
+                </button>
+                <button class="btn btn-light" id="btn-end" title="Go to End" data-i18n="[title]pgnViewer.button.end">
+                  <i class="fa-solid fa-angles-right"></i>
+                </button>
               </div>
             </div>
-            <div class="mb-3">
-              <label class="form-label" data-i18n="main.content.complementaryColor.switchLabel">Example Switch:</label>
-              <div class="d-flex align-items-center">
-                <div class="form-check form-switch">
-                  <input class="form-check-input switch-complementary" type="checkbox" role="switch" id="switch2" data-checked="ON" data-unchecked="OFF">
-                  <label class="form-check-label ms-2" for="switch2"></label> <!-- Switch label is handled by notif.js -->
-                </div>
-              </div>
-            </div>
-            <div class="mb-3">
-              <button type="button" class="btn btn-complementary" onclick="showComplementaryNotification()" data-i18n="main.content.complementaryColor.button">Complementary Notification</button>
-            </div>
+            <!-- Removed template example sections -->
           </div>
-
-          <!-- Example: <div id="app-specific-ui"></div> -->
         </div>
       </main>
     </div>
@@ -153,20 +165,20 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addFileModalLabel" data-i18n="modal.addFile.title">Add New File</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title" id="addFileModalLabel" data-i18n="modal.addPgnFile.title">Add New PGN File</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form id="addFileForm" name="addFileForm">
             <div class="mb-3">
-              <label for="newFileNameInput" class="form-label" data-i18n="modal.addFile.fileNameLabel">File Name:</label> <input type="text" class="form-control" id="newFileNameInput" placeholder="e.g., work.txt" required="" data-i18n="[placeholder]modal.addFile.fileNamePlaceholder">
-              <div class="form-text" data-i18n="modal.addFile.fileNameHelp">
-                Must end with .txt (will be added if missing).
+              <label for="newFileNameInput" class="form-label" data-i18n="modal.addPgnFile.fileNameLabel">File Name:</label> <input type="text" class="form-control" id="newFileNameInput" placeholder="e.g., kasparov_deep_blue.pgn" required="" data-i18n="[placeholder]modal.addPgnFile.fileNamePlaceholder"> <!-- Changed key and placeholder -->
+              <div class="form-text" data-i18n="modal.addPgnFile.fileNameHelp">
+                Must end with .pgn (will be added if missing).
               </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-complementary btn-rounded" data-bs-dismiss="modal" data-i18n="modal.button.cancel">Cancel</button> <button type="submit" class="btn btn-primary btn-rounded" form="addFileForm" data-i18n="modal.addFile.button.add">Add File</button>
+          <button type="button" class="btn btn-complementary btn-rounded" data-bs-dismiss="modal" data-i18n="modal.button.cancel">Cancel</button> <button type="submit" class="btn btn-primary btn-rounded" form="addFileForm" data-i18n="modal.addPgnFile.button.add">Add PGN File</button> <!-- Changed key -->
         </div>
       </div>
     </div>
@@ -175,21 +187,21 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="renameFileModalLabel" data-i18n="modal.renameFile.title">Rename File</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title" id="renameFileModalLabel" data-i18n="modal.renamePgnFile.title">Rename PGN File</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form id="renameFileForm" name="renameFileForm">
-            <p data-i18n="modal.renameFile.body.renamingLabel">Renaming: <strong id="currentFileNameToRename"></strong></p>
+            <p data-i18n="modal.renamePgnFile.body.renamingLabel">Renaming: <strong id="currentFileNameToRename"></strong></p> <!-- Changed key -->
             <div class="mb-3">
-              <label for="newRenameFileNameInput" class="form-label" data-i18n="modal.renameFile.newFileNameLabel">New File Name:</label> <input type="text" class="form-control" id="newRenameFileNameInput" placeholder="e.g., work_updated.txt" required="" data-i18n="[placeholder]modal.renameFile.newFileNamePlaceholder">
-              <div class="form-text" data-i18n="modal.renameFile.newFileNameHelp">
-                Must end with .txt (will be added if missing). Cannot rename to an existing file name.
+              <label for="newRenameFileNameInput" class="form-label" data-i18n="modal.renamePgnFile.newFileNameLabel">New File Name:</label> <input type="text" class="form-control" id="newRenameFileNameInput" placeholder="e.g., kasparov_deep_blue_final.pgn" required="" data-i18n="[placeholder]modal.renamePgnFile.newFileNamePlaceholder">
+              <div class="form-text" data-i18n="modal.renamePgnFile.newFileNameHelp">
+                Must end with .pgn (will be added if missing). Cannot rename to an existing file name.
               </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-complementary btn-rounded" data-bs-dismiss="modal" data-i18n="modal.button.cancel">Cancel</button> <button type="submit" class="btn btn-primary btn-rounded" form="renameFileForm" data-i18n="modal.renameFile.button.rename">Rename File</button>
+          <button type="button" class="btn btn-complementary btn-rounded" data-bs-dismiss="modal" data-i18n="modal.button.cancel">Cancel</button> <button type="submit" class="btn btn-primary btn-rounded" form="renameFileForm" data-i18n="modal.renamePgnFile.button.rename">Rename PGN File</button>
         </div>
       </div>
     </div>
@@ -198,14 +210,14 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="deleteFileModalLabel" data-i18n="modal.deleteFile.title">Confirm File Deletion</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title" id="deleteFileModalLabel" data-i18n="modal.deletePgnFile.title">Confirm PGN File Deletion</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p data-i18n="modal.deleteFile.body.confirm">Are you sure you want to delete the file "<strong id="fileNameToDelete"></strong>"?</p>
+          <p data-i18n="modal.deletePgnFile.body.confirm">Are you sure you want to delete the PGN file "<strong id="fileNameToDelete"></strong>"?</p>
           <p class="text-danger"><small data-i18n="modal.deleteFile.body.warning">This action cannot be undone.</small></p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-complementary btn-rounded" data-bs-dismiss="modal" data-i18n="modal.button.cancel">Cancel</button> <button type="button" class="btn btn-primary btn-rounded" id="confirmDeleteFileButton" data-i18n="modal.deleteFile.button.delete">Delete File</button>
+          <button type="button" class="btn btn-complementary btn-rounded" data-bs-dismiss="modal" data-i18n="modal.button.cancel">Cancel</button> <button type="button" class="btn btn-primary btn-rounded" id="confirmDeleteFileButton" data-i18n="modal.deletePgnFile.button.delete">Delete PGN File</button>
         </div>
       </div>
     </div>
@@ -213,7 +225,6 @@
   <script src="/assets/js/lib/jquery-3.7.1.slim.min.js"></script>
   <script src="/assets/js/lib/popper-2.11.8.min.js"></script>
   <script src="/assets/js/lib/bootstrap-5.3.2.min.js"></script>
-  <script src="/assets/js/lib/bootstrap-datepicker-1.10.0.min.js"></script>
   <script src="/assets/js/lib/clipboard-2.0.11.min.js"></script>
   <script src="/assets/js/lib/i18next-23.16.4.min.js"></script>
   <script src="/assets/js/lib/i18nextHttpBackend-3.0.2.min.js"></script>
@@ -224,10 +235,10 @@
   <script src="/assets/js/lib/brands-6.7.2.min.js"></script>
   <script src="/assets/js/lib/solid-6.7.2.min.js"></script>
   <script src="/assets/js/lib/dropbox-sdk-10.34.0.min.js"></script>
+  <script src="/assets/js/lib/chess-0.13.4.min.js" type="module"></script>
   <script src="/assets/js/cache.js"></script>
   <script src="/assets/js/dropbox-sync.js" type="module"></script>
-  <script src="/assets/js/TEMPLATE.js" type="module"></script>
-  <script src="/assets/js/datepicker.js"></script>
+  <script src="/assets/js/pgn-viewer.js" type="module"></script>
   <script src="/assets/js/switch.js"></script>
   <script src="/assets/js/notif.js"></script>
 </body>

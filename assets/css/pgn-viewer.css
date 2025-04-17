@@ -258,3 +258,137 @@ body {
 #fileListSidebar .nav-link:hover {
   background-color: #f8f9fa; /* Hover effect */
 }
+
+/* PGN Viewer Specific Styles */
+#chessboard-container {
+  /* Ensure the container allows the board to be square */
+  position: relative;
+  width: 100%; /* Take full width of its column */
+  max-width: 600px; /* Optional: Limit max size */
+  margin: 0 auto; /* Center if max-width is applied */
+}
+
+#chessboard {
+  width: 100%;
+  padding-top: 100%; /* Aspect Ratio Hack: 1:1 */
+  position: relative;
+  background-color: lightgray; /* Background for the area around the board */
+  box-sizing: border-box;
+  /* Add styles for indices later if needed */
+}
+
+/* Placeholder for board squares - will be replaced by actual squares */
+#chessboard > div[style*="padding-top: 100%"] {
+  display: none; /* Hide the initial placeholder div */
+}
+
+/* Styles for actual board squares (to be generated, likely by JS) */
+.board-grid {
+  position: absolute;
+  top: 5%; /* Adjust based on index size */
+  left: 5%; /* Adjust based on index size */
+  width: 90%; /* Adjust based on index size */
+  height: 90%; /* Adjust based on index size */
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  border: 1px solid #555; /* Optional border for the grid itself */
+}
+
+.square {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em; /* Example size for pieces */
+}
+
+.square.light { background-color: #F8F8F2; }
+.square.dark  { background-color: #0083B3; }
+
+.square.light.selected { background-color: #F8F9FA; }
+.square.dark.selected  { background-color: #00698F; }
+
+/* Styles for indices */
+.indices {
+  position: absolute;
+  font-size: clamp(0.6em, 2.5vmin, 0.9em); /* Responsive font size */
+  color: #333;
+  pointer-events: none; /* Don't interfere with clicks */
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.indices.rank { /* 1-8 */
+  left: 0;
+  top: 5%; /* Align with board grid top */
+  width: 5%; /* Occupy space to the left */
+  height: 90%; /* Align with board grid height */
+  flex-direction: column;
+  padding-right: 0.5%; /* Small gap */
+}
+
+.indices.file { /* a-h */
+  bottom: 0;
+  left: 5%; /* Align with board grid left */
+  width: 90%; /* Align with board grid width */
+  height: 5%; /* Occupy space below */
+  flex-direction: row;
+  padding-top: 0.5%; /* Small gap */
+}
+
+/* Individual index alignment might be needed if space-around isn't perfect */
+.indices span {
+  display: block; /* Ensure they take up space in flex */
+  text-align: center;
+}
+
+/* Adjust PGN input height */
+#pgn-input {
+  min-height: 200px; /* Ensure a decent minimum height */
+  resize: vertical; /* Allow vertical resizing */
+}
+
+/* Ensure controls are spaced nicely */
+#pgn-controls-container .d-flex > div:last-child {
+  text-align: right;
+}
+
+/* Style for the chess pieces */
+.chess-piece {
+  max-width: 100%;  /* Fill the square width */
+  max-height: 100%; /* Fill the square height */
+  display: block;   /* Prevent extra space below image */
+  margin: auto;     /* Center piece if smaller than square */
+  user-select: none; /* Prevent image selection */
+  -webkit-user-drag: none; /* Prevent image dragging */
+}
+
+/* Highlight for the selected square */
+.square.selected {
+  /* Use a distinct background or border */
+  /* Example: Slightly darker shade of the original color */
+  /* Adjust colors as needed */
+  background-color: #cceeff; /* Light blue highlight, works on both light/dark */
+  outline: 2px solid #007bff; /* Add an outline */
+  outline-offset: -2px; /* Inset outline */
+}
+.square.dark.selected { background-color: #005f80; } /* Darker blue for dark squares */
+.square.light.selected { background-color: #b3e0ff; } /* Lighter blue for light squares */
+
+
+/* Highlight for valid move destination squares */
+.square.valid-move {
+  /* Use a subtle indicator, like a dot or a different border/background */
+  /* Example: A radial gradient dot */
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.2) 20%, transparent 25%);
+  cursor: pointer; /* Indicate it's clickable */
+}
+
+/* Ensure valid-move highlight doesn't overwrite piece image */
+.square.valid-move .chess-piece {
+  position: relative; /* Needed for z-index */
+  z-index: 1;
+}

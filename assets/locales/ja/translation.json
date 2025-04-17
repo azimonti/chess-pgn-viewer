@@ -1,35 +1,35 @@
 {
-  "pageTitle": "PWA テンプレート",
+  "app": {
+    "title": "チェス PGN ビューア"
+  },
   "sidebar": {
-    "title": "ファイル",
+    "pgnFilesTitle": "PGN ファイル",
     "button": {
-      "import": "ディスクからファイルをインポート",
-      "add": "新しいファイルを追加",
-      "rename": "現在のファイルを名前変更",
-      "delete": "現在のファイルを削除"
+      "importPgn": "ディスクからPGNファイルをインポート",
+      "addPgn": "新しいPGNファイルを追加",
+      "renamePgn": "現在のPGNファイルを名前変更",
+      "deletePgn": "現在のPGNファイルを削除"
     },
-    "loadingFiles": "ファイルを読み込み中..."
+    "loadingPgnFiles": "PGNファイルを読み込み中..."
   },
   "main": {
     "header": {
-      "currentFile": "現在のファイル",
+      "loadedPgn": "読み込み済み PGN",
       "syncStatusTitle": "同期ステータス",
       "dropboxConnectTitle": "Dropboxに接続",
       "helpTitle": "ヘルプ"
-    },
-    "content": {
-      "primaryColor": {
-        "title": "プライマリカラー",
-        "datepickerLabel": "日付ピッカー例:",
-        "switchLabel": "スイッチ例:",
-        "button": "プライマリ通知"
-      },
-      "complementaryColor": {
-        "title": "補色",
-        "datepickerLabel": "日付ピッカー例:",
-        "switchLabel": "スイッチ例:",
-        "button": "補色通知"
-      }
+    }
+  },
+  "pgnViewer": {
+    "pgnInputLabel": "PGN 入力:",
+    "pgnInputPlaceholder": "ここにPGNを貼り付け...",
+    "button": {
+      "flip": "盤面を反転",
+      "cyclePieces": "駒セットを切り替え",
+      "start": "開始位置へ",
+      "previous": "前の手へ",
+      "next": "次の手へ",
+      "end": "最終手へ"
     }
   },
   "modal": {
@@ -47,61 +47,96 @@
         "keepDropbox": "Dropboxを保持 (ローカルを上書き)"
       }
     },
-    "addFile": {
-      "title": "新しいファイルを追加",
+    "addPgnFile": {
+      "title": "新しいPGNファイルを追加",
       "fileNameLabel": "ファイル名:",
-      "fileNamePlaceholder": "例: work.txt",
-      "fileNameHelp": ".txtで終わる必要があります（ない場合は追加されます）。",
+      "fileNamePlaceholder": "例: kasparov_deep_blue.pgn",
+      "fileNameHelp": ".pgnで終わる必要があります（ない場合は追加されます）。",
       "button": {
-        "add": "ファイルを追加"
+        "add": "PGNファイルを追加"
       }
     },
-    "renameFile": {
-      "title": "ファイル名を変更",
+    "renamePgnFile": {
+      "title": "PGNファイル名を変更",
       "body": {
         "renamingLabel": "名前変更中: "
       },
       "newFileNameLabel": "新しいファイル名:",
-      "newFileNamePlaceholder": "例: work_updated.txt",
-      "newFileNameHelp": ".txtで終わる必要があります（ない場合は追加されます）。既存のファイル名には変更できません。",
+      "newFileNamePlaceholder": "例: kasparov_deep_blue_final.pgn",
+      "newFileNameHelp": ".pgnで終わる必要があります（ない場合は追加されます）。既存のファイル名には変更できません。",
       "button": {
-        "rename": "ファイル名を変更"
+        "rename": "PGNファイル名を変更"
       }
     },
-    "deleteFile": {
-      "title": "ファイル削除の確認",
+    "deletePgnFile": {
+      "title": "PGNファイル削除の確認",
       "body": {
-        "confirm": "ファイル \"",
+        "confirm": "PGNファイル \"",
         "warning": "この操作は元に戻せません。"
       },
       "button": {
-        "delete": "ファイルを削除"
+        "delete": "PGNファイルを削除"
       }
     },
     "button": {
       "cancel": "キャンセル"
     }
   },
+  "notification": {
+    "checkmateWhiteWins": "チェックメイト！白の勝ちです。",
+    "checkmateBlackWins": "チェックメイト！黒の勝ちです。",
+    "stalemate": "ステールメイト！引き分けです。",
+    "threefoldRepetition": "千日手により引き分けです。",
+    "draw": "引き分けです！（駒不足または50手ルール）",
+    "gameOverTitle": "対局終了"
+  },
+  "languageSwitcher": {
+    "header": "言語"
+  },
   "helpPage": {
-    "title": "PWA テンプレート - ヘルプ",
+    "title": "チェス PGN ビューア - ヘルプ",
     "header": "ヘルプ",
     "button": {
       "backToApp": "アプリに戻る"
     },
     "content": {
-      "title": "PWA テンプレート ヘルプ",
-      "intro": "このドキュメントは、PWA テンプレート Webapp の使用方法を説明します。"
+      "title": "チェス PGN ビューア ヘルプ",
+      "intro": "このドキュメントは、チェス PGN ビューア Webapp の使用方法を説明します。",
+      "loading": {
+        "title": "PGN ファイルの読み込み",
+        "step1": "「PGNを読み込む」ボタン（通常はフォルダアイコンなどで表されます）をクリックします。",
+        "step2": "表示されるファイルブラウザを使用して、ローカルデバイスから `.pgn` ファイルを選択します。",
+        "step3": "アプリケーションはPGNファイル内で最初に見つかったゲームを読み込みます。PGNに複数のゲームが含まれている場合、通常は最初に最初のゲームのみが表示されます（動作は実装によって異なる場合があります）。"
+      },
+      "viewing": {
+        "title": "ゲーム情報の表示",
+        "metadata": "<strong>メタデータ:</strong> ゲームが読み込まれると、プレイヤー名（白と黒）、イベント、サイト、日付、ラウンド、結果などの詳細がチェス盤の上または横に表示されます。",
+        "moves": "<strong>棋譜リスト:</strong> ゲームの棋譜は、スクロール可能な領域に標準代数表記法（SAN）でリスト表示されます。盤面に表示されている現在の手は通常ハイライトされます。"
+      },
+      "navigating": {
+        "title": "ゲームのナビゲーション",
+        "intro": "盤面または棋譜リストの下にあるコントロールボタンを使用します:",
+        "first": "<strong>開始局面:</strong> ゲームの開始局面に進みます。",
+        "prev": "<strong>前の手:</strong> 一手戻ります。",
+        "next": "<strong>次の手:</strong> 一手進みます。",
+        "last": "<strong>最終局面:</strong> ゲームの最終局面に進みます。",
+        "click": "<strong>棋譜クリック:</strong> 棋譜リスト内の手を直接クリックして、ゲーム内の特定の局面にジャンプできることがよくあります。"
+      },
+      "board": {
+        "title": "盤面の理解",
+        "visual": "チェス盤は、現在選択されている手に対応する局面を視覚的に表します。",
+        "pieces": "駒は標準的なチェスの表現に従って表示されます。",
+        "orientation": "盤面の向き（白が下か黒が下か）は、設定で構成可能かもしれません（実装されている場合）。"
+      },
+      "offline": {
+        "title": "オフラインでの使用",
+        "desc": "このアプリケーションはプログレッシブウェブアプリ（PWA）であり、Service Workerを利用しています。オンライン中に一度アプリを読み込むと、オフラインでの使用が可能になり、以前に読み込んだ、またはキャッシュされたPGNデータを表示できます（特定のオフライン機能は実装に依存します）。"
+      },
+      "troubleshooting": {
+        "title": "トラブルシューティング",
+        "invalid": "<strong>無効なPGN:</strong> 選択したファイルが無効なPGNであるか破損している場合、アプリケーションはエラーを表示するか、ゲームの読み込みに失敗する可能性があります。PGNファイルが標準形式に準拠していることを確認してください。",
+        "multiple": "<strong>複数ゲーム:</strong> 標準のPGNファイルには複数のゲームが含まれることがあります。このビューアはデフォルトで最初のゲームのみを読み込む場合があります。ファイル内の他のゲームを選択するオプションがあるか確認してください（実装されている場合）。"
+      }
     }
-  },
-  "switch": {
-    "on": "オン",
-    "off": "オフ"
-  },
-  "notification": {
-    "disappearingAlert": "消えるアラート通知",
-    "fixedSuccess": "固定成功通知"
-  },
-  "languageSwitcher": {
-    "header": "言語"
   }
 }

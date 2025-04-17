@@ -18,6 +18,8 @@
   "globals": {
     "$": "readonly",
     "bootstrap": "readonly",
-    "katex": "readonly"
+    "i18next": "readonly",
+    "katex": "readonly",
+    "showNotification": "readonly"
   }
 }

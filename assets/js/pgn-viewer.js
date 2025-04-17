@@ -1,4 +1,6 @@
 /* global showNotification */
+/* NOTE: This file (pgn-viewer.js) should primarily contain imports and top-level initialization. */
+/* Avoid adding complex function definitions directly here. Use separate modules and import them. */
 'use strict';
 
 import {
@@ -7,12 +9,14 @@ import {
   DEFAULT_FILE_PATH
 } from './storage/storage.js';
 import { initializeDropboxSync } from './dropbox-sync.js';
-import { logVerbose } from './logging.js';
+import { logDevelopment } from './logging.js';
 import {
   setupAddFileModalListeners,
   setupRenameFileModalListeners,
   setupDeleteFileConfirmListener
 } from './storage/files.js';
+import { renderBoard, flipBoard, cyclePieceSet } from './board-ui.js';
+import { initializeGame, getCurrentFen } from './game-logic.js'; // Import game logic functions
 
 const addFileButton = $('#addFileButton');
 const renameFileButton = $('#renameFileButton');
@@ -20,19 +24,55 @@ const deleteFileButton = $('#deleteFileButton');
 const newFileNameInput = $('#newFileNameInput');
 const currentFileNameToRename = $('#currentFileNameToRename');
 const newRenameFileNameInput = $('#newRenameFileNameInput');
+const flipBoardButton = $('#btn-flip-board'); // Get the flip button
+const cyclePiecesButton = $('#btn-cycle-pieces'); // Get the cycle pieces button
+const chessboardContainer = $('#chessboard'); // Get the board container
 
 let addFileModalInstance = null;
 let renameFileModalInstance = null;
 
 
 // --- Generic initialization logic below ---
-
-
 $(document).ready(function () {
 
-  logVerbose("Document ready: Initializing UI and listeners.");
+  logDevelopment("Document ready: Initializing UI and listeners.");
   initializeDropboxSync();
   setupDeleteFileConfirmListener();
+
+  // --- PGN Viewer Initialization ---
+  if (initializeGame()) { // Initialize the game state first
+    if (chessboardContainer.length) {
+      logDevelopment("Rendering initial chessboard from game state.");
+      renderBoard(chessboardContainer[0], getCurrentFen()); // Render board using FEN from game logic
+    } else {
+      logDevelopment("Error: Chessboard container element not found!", 'error');
+    }
+  } else {
+    logDevelopment("Error: Failed to initialize game logic!", 'error');
+    // Optionally display an error to the user
+  }
+
+  // Flip board button listener
+  flipBoardButton.click(function() {
+    const STARTING_FEN_WHITE_TURN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+    const STARTING_FEN_BLACK_TURN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1';
+
+    if (getCurrentFen() === STARTING_FEN_WHITE_TURN) {
+      logDevelopment('Current: Start White. Setting Start Black.');
+      initializeGame(STARTING_FEN_BLACK_TURN);
+    } else if (getCurrentFen() === STARTING_FEN_BLACK_TURN) {
+      logDevelopment('Current: Start Black. Setting Start White.');
+      initializeGame(STARTING_FEN_WHITE_TURN);
+    }
+    logDevelopment("Flip board button clicked.");
+    flipBoard();
+  });
+
+  // Cycle piece set button listener
+  cyclePiecesButton.click(function() {
+    logDevelopment("Cycle piece set button clicked.");
+    cyclePieceSet();
+  });
 
   // --- File Management Button Click Handlers (Modal Openers) ---
 
@@ -51,11 +91,11 @@ $(document).ready(function () {
       }
 
       if (!addFileModalInstance) {
-        logVerbose("Initializing Add File Modal instance and listeners for the first time.");
+        logDevelopment("Initializing Add File Modal instance and listeners for the first time.");
         addFileModalInstance = new window.bootstrap.Modal(addModalElement);
         setupAddFileModalListeners();
       } else {
-        logVerbose("Add File Modal instance already exists.");
+        logDevelopment("Add File Modal instance already exists.");
       }
 
       newFileNameInput.val('');
@@ -83,11 +123,11 @@ $(document).ready(function () {
       }
 
       if (!renameFileModalInstance) {
-        logVerbose("Initializing Rename File Modal instance and listeners for the first time.");
+        logDevelopment("Initializing Rename File Modal instance and listeners for the first time.");
         renameFileModalInstance = new window.bootstrap.Modal(renameModalElement);
         setupRenameFileModalListeners();
       } else {
-        logVerbose("Rename File Modal instance already exists.");
+        logDevelopment("Rename File Modal instance already exists.");
       }
 
       const currentFilePath = getActiveFile();
@@ -132,7 +172,7 @@ $(document).ready(function () {
       return;
     }
 
-    logVerbose(`Requesting delete confirmation for file: ${fileToDelete.name} (${filePathToDelete})`);
+    logDevelopment(`Requesting delete confirmation for file: ${fileToDelete.name} (${filePathToDelete})`);
 
     $('#fileNameToDelete').text(fileToDelete.name);
     $('#deleteFileModalConfirm').data('filePathToDelete', filePathToDelete);
