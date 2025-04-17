@@ -3,6 +3,7 @@
 A Progressive Web Application (PWA) for viewing and analyzing chess games stored in Portable Game Notation (PGN) format.
 
 This application allows users to:
+
 * Load PGN files from their local device.
 * View chess game metadata (players, event, date, result, etc.).
 * Step through games move by move using interactive board controls.
@@ -14,7 +15,7 @@ This application allows users to:
 
 For detailed instructions on how to use the application's features, please see the [Help Page](help/index.html) or the [Markdown Help](help.md).
 
-![Chess PGN Viewer](screenshots/app_desktop_1_0.png)
+![Chess PGN Viewer](screenshots/app_desktop_0_8.png)
 
 ## Usage for Development
 
