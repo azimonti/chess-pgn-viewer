@@ -14,9 +14,9 @@ import {
   setupAddFileModalListeners,
   setupRenameFileModalListeners,
   setupDeleteFileConfirmListener
-} from './storage/files.js';
-import { renderBoard, flipBoard, cyclePieceSet } from './board-ui.js';
-import { initializeGame, getCurrentFen } from './game-logic.js'; // Import game logic functions
+ } from './storage/files.js';
+ import { renderBoard, flipBoard, cyclePieceSet } from './board-ui.js';
+ import { initializeGame, getCurrentFen, loadPgn } from './game-logic.js'; // Import game logic functions
 
 const addFileButton = $('#addFileButton');
 const renameFileButton = $('#renameFileButton');
@@ -26,6 +26,8 @@ const currentFileNameToRename = $('#currentFileNameToRename');
 const newRenameFileNameInput = $('#newRenameFileNameInput');
 const flipBoardButton = $('#btn-flip-board'); // Get the flip button
 const cyclePiecesButton = $('#btn-cycle-pieces'); // Get the cycle pieces button
+const loadPgnButton = $('#btn-load-pgn'); // Get the load PGN button
+const pgnInputArea = $('#pgn-input'); // Get the PGN textarea
 const chessboardContainer = $('#chessboard'); // Get the board container
 
 let addFileModalInstance = null;
@@ -73,6 +75,32 @@ $(document).ready(function () {
     logDevelopment("Cycle piece set button clicked.");
     cyclePieceSet();
   });
+
+  // Load PGN from text area button listener
+  loadPgnButton.click(function() {
+    logDevelopment("Load PGN button clicked.");
+    const pgnText = pgnInputArea.val();
+    if (!pgnText) {
+      showNotification("PGN input area is empty.", 'info');
+      return;
+    }
+    try {
+      if (loadPgn(pgnText)) {
+        logDevelopment("PGN loaded successfully from text area.");
+        renderBoard(chessboardContainer[0], getCurrentFen()); // Re-render board with new game state
+        showNotification("PGN loaded successfully.", 'success');
+      } else {
+        // loadPgn might return false for non-exception errors (e.g., empty PGN after parsing)
+        logDevelopment("Failed to load PGN from text area (loadPgn returned false).", 'warn');
+        showNotification("Could not load game from PGN text.", 'alert');
+      }
+     } catch (error) {
+       const errorMessage = error.message || 'Unknown error during PGN loading.';
+       logDevelopment(`Error loading PGN from text area: ${errorMessage}`, 'error');
+       console.error("Error loading PGN:", error);
+       showNotification(`Error loading PGN: ${errorMessage}`, 'alert'); // Show specific error
+     }
+   });
 
   // --- File Management Button Click Handlers (Modal Openers) ---
 

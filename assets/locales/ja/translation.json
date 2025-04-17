@@ -26,6 +26,7 @@
     "button": {
       "flip": "盤面を反転",
       "cyclePieces": "駒セットを切り替え",
+      "loadPgn": "テキストエリアからPGNを読み込む",
       "start": "開始位置へ",
       "previous": "前の手へ",
       "next": "次の手へ",

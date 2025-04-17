@@ -26,6 +26,7 @@
     "button": {
       "flip": "Flip Board",
       "cyclePieces": "Cycle Piece Set",
+      "loadPgn": "Load PGN from Text Area",
       "start": "Go to Start",
       "previous": "Previous Move",
       "next": "Next Move",

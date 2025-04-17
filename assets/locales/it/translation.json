@@ -26,6 +26,7 @@
     "button": {
       "flip": "Capovolgi Scacchiera",
       "cyclePieces": "Cambia Set Pezzi",
+      "loadPgn": "Carica PGN dall'Area di Testo",
       "start": "Vai all'Inizio",
       "previous": "Mossa Precedente",
       "next": "Mossa Successiva",

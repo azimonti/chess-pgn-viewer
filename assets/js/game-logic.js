@@ -165,4 +165,42 @@ function checkGameStatus() {
     logDevelopment(`Game over notification: ${title} - ${message} (Type: ${notificationType})`);
   }
 }
-// Add more functions as needed (e.g., loadPgn, undoMove, getHistory, etc.)
+
+/**
+ * Loads a game from a PGN string.
+ * Uses the chess.js library's load_pgn method.
+ * @param {string} pgnString - The PGN text to load.
+ * @returns {boolean} True if the PGN was loaded successfully, false otherwise.
+ */
+export function loadPgn(pgnString) {
+  if (!chess) {
+    // Attempt to initialize if not already done
+    if (!initializeGame()) {
+      logDevelopment('Error: Cannot load PGN, game initialization failed.', 'error');
+      return false;
+    }
+  }
+  try {
+    // Normalize newlines and trim whitespace
+    const normalizedPgn = pgnString.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+    // Use default newline handling, but explicitly set sloppy to false
+    const options = { sloppy: false };
+    logDevelopment(`Attempting to load PGN. Trimmed & Normalized text (first 100 chars): ${normalizedPgn.substring(0, 100)}`, 'debug'); // Log input
+    const success = chess.load_pgn(normalizedPgn, options); // Added options with sloppy: false
+    logDevelopment(`chess.load_pgn returned: ${success}. Current FEN after attempt: ${chess.fen()}`, 'debug'); // Log output and state
+    if (success) {
+      logDevelopment(`PGN loaded successfully. First move: ${chess.history()[0] || 'N/A'}. Current FEN: ${chess.fen()}`);
+      // Optionally reset board orientation or other UI elements if needed upon new PGN load
+    } else {
+      logDevelopment('chess.load_pgn returned false. PGN might be invalid or empty.', 'warn');
+    }
+    return success;
+  } catch (error) {
+    logDevelopment(`Error loading PGN: ${error}`, 'error');
+    // Potentially re-initialize to a default state if loading fails badly
+    // initializeGame(); // Uncomment if you want to reset to start on error
+    return false;
+  }
+}
+
+// Add more functions as needed (e.g., undoMove, getHistory, etc.)

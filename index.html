@@ -108,17 +108,16 @@
 
           <!-- PGN Input and Controls Area -->
           <div id="pgn-controls-container" class="col-lg-5 col-xl-6 col-12"> <!-- Adjusted columns -->
-            <div class="mb-3">
-              <label for="pgn-input" class="form-label" data-i18n="pgnViewer.pgnInputLabel">PGN Input:</label>
-              <textarea class="form-control" id="pgn-input" rows="10" placeholder="Paste PGN here..." data-i18n="[placeholder]pgnViewer.pgnInputPlaceholder"></textarea>
-            </div>
-            <div class="d-flex justify-content-between align-items-center flex-wrap"> <!-- Added flex-wrap -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap mb-3"> <!-- Moved buttons up, added mb-3 -->
               <div>
                 <button class="btn btn-light me-1" id="btn-flip-board" title="Flip Board" data-i18n="[title]pgnViewer.button.flip">
                   <i class="fa-solid fa-rotate"></i>
                 </button>
                 <button class="btn btn-light me-1" id="btn-cycle-pieces" title="Cycle Piece Set" data-i18n="[title]pgnViewer.button.cyclePieces">
                   <i class="fa-solid fa-chess"></i>
+                </button>
+                <button class="btn btn-light me-1" id="btn-load-pgn" title="Load PGN from Text Area" data-i18n="[title]pgnViewer.button.loadPgn"> <!-- Added Load PGN button -->
+                  <i class="fa-solid fa-upload"></i>
                 </button>
               </div>
               <div>
@@ -135,6 +134,10 @@
                   <i class="fa-solid fa-angles-right"></i>
                 </button>
               </div>
+            </div>
+            <div class="mb-3"> <!-- Textarea and label moved down -->
+              <label for="pgn-input" class="form-label" data-i18n="pgnViewer.pgnInputLabel">PGN Input:</label>
+              <textarea class="form-control" id="pgn-input" rows="10" placeholder="Paste PGN here..." data-i18n="[placeholder]pgnViewer.pgnInputPlaceholder"></textarea>
             </div>
             <!-- Removed template example sections -->
           </div>
