@@ -1,3 +1,4 @@
+'use strict';
 import { logDevelopment } from './logging.js';
 import {
   makeMove,
@@ -8,7 +9,7 @@ import {
 } from './game-logic.js';
 
 // --- Constants ---
-const PIECE_SETS = ['set1', 'set2'];
+const PIECE_SETS = ['set1', 'set2', 'set3'];
 const pieceMap = { // Map FEN characters to filenames
   'r': 'rook_black.png', 'n': 'knight_black.png', 'b': 'bishop_black.png', 'q': 'queen_black.png', 'k': 'king_black.png', 'p': 'pawn_black.png',
   'R': 'rook_white.png', 'N': 'knight_white.png', 'B': 'bishop_white.png', 'Q': 'queen_white.png', 'K': 'king_white.png', 'P': 'pawn_white.png'

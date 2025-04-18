@@ -1,8 +1,12 @@
+'use strict';
 import { logDevelopment } from './logging.js';
-import { Chess } from './lib/chess-0.13.4.min.js';
-import { getIsBoardFlipped } from './board-ui.js'; 
+import { Chess } from './lib/chess-1.2.0.min.js';
+import { getIsBoardFlipped } from './board-ui.js';
 
-let chess = null; // The chess.js instance
+let chess = null; // The chess.js instance for the *current* position
+let initialFen = null; // FEN of the starting position of the loaded PGN
+let moveHistory = []; // Array to store the sequence of moves (verbose objects) from the loaded PGN
+let currentMoveIndex = -1; // -1 indicates the initial position before the first move
 
 /**
  * Initializes the chess game logic.
@@ -11,12 +15,19 @@ let chess = null; // The chess.js instance
  */
 export function initializeGame(fen = null) {
   try {
-    chess = fen ? new Chess(fen) : new Chess();
-    logDevelopment(`Game initialized. FEN: ${chess.fen()}`);
+    const startFen = fen || new Chess().fen(); // Default to standard start if no FEN provided
+    chess = new Chess(startFen);
+    initialFen = startFen; // Store the initial FEN
+    moveHistory = []; // Clear history
+    currentMoveIndex = -1; // Reset index
+    logDevelopment(`Game initialized. Initial FEN: ${initialFen}`);
     return true;
   } catch (error) {
     logDevelopment(`Error initializing chess.js: ${error}`, 'error');
-    chess = null; // Ensure chess is null if initialization fails
+    initialFen = null;
+    moveHistory = [];
+    currentMoveIndex = -1;
+    chess = null;
     return false;
   }
 }
@@ -118,8 +129,7 @@ export function isGameOver() {
     logDevelopment('Error: Game not initialized.', 'error');
     return false; // Or handle as appropriate
   }
-  // Use the correct method names from chess.js
-  return chess.in_checkmate() || chess.in_stalemate() || chess.in_threefold_repetition() || chess.in_draw();
+  return chess.isCheckmate() || chess.isStalemate() || chess.isThreefoldRepetition() || chess.isDraw();
 }
 
 
@@ -131,7 +141,7 @@ function checkGameStatus() {
   let messageOptions = {};
   let notificationType = 'info'; // Default type
 
-  if (chess.in_checkmate()) { // Corrected method name
+  if (chess.isCheckmate()) {
     const winner = chess.turn() === 'b' ? 'White' : 'Black'; // Winner is the one whose turn it ISN'T
     messageKey = winner === 'White' ? 'notification.checkmateWhiteWins' : 'notification.checkmateBlackWins';
 
@@ -145,13 +155,13 @@ function checkGameStatus() {
       notificationType = whiteAtBottom ? 'error' : 'success';
     }
 
-  } else if (chess.in_stalemate()) { // Corrected method name
+  } else if (chess.isStalemate()) {
     messageKey = 'notification.stalemate';
     notificationType = 'warning';
-  } else if (chess.in_threefold_repetition()) { // Corrected method name
+  } else if (chess.isThreefoldRepetition()) {
     messageKey = 'notification.threefoldRepetition';
     notificationType = 'warning';
-  } else if (chess.in_draw()) { // Corrected method name (Catches insufficient material, 50-move rule besides the above)
+  } else if (chess.isDraw()) {
     messageKey = 'notification.draw';
     notificationType = 'warning';
   }
@@ -181,26 +191,121 @@ export function loadPgn(pgnString) {
     }
   }
   try {
-    // Normalize newlines and trim whitespace
-    const normalizedPgn = pgnString.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
-    // Use default newline handling, but explicitly set sloppy to false
-    const options = { sloppy: false };
-    logDevelopment(`Attempting to load PGN. Trimmed & Normalized text (first 100 chars): ${normalizedPgn.substring(0, 100)}`, 'debug'); // Log input
-    const success = chess.load_pgn(normalizedPgn, options); // Added options with sloppy: false
-    logDevelopment(`chess.load_pgn returned: ${success}. Current FEN after attempt: ${chess.fen()}`, 'debug'); // Log output and state
-    if (success) {
-      logDevelopment(`PGN loaded successfully. First move: ${chess.history()[0] || 'N/A'}. Current FEN: ${chess.fen()}`);
-      // Optionally reset board orientation or other UI elements if needed upon new PGN load
-    } else {
-      logDevelopment('chess.load_pgn returned false. PGN might be invalid or empty.', 'warn');
-    }
-    return success;
+    chess = new Chess();
+    chess.loadPgn(pgnString);
+
+    initialFen = chess.getHeaders().FEN || new Chess().fen();
+    moveHistory = chess.history({ verbose: true }) || [];
+    currentMoveIndex = -1;
+
+    logDevelopment(`PGN loaded successfully. Initial FEN: ${initialFen}. History length: ${moveHistory.length}. Current index: ${currentMoveIndex}. Main chess instance now holds the full game, reset to start`);
+    return true;
   } catch (error) {
     logDevelopment(`Error loading PGN: ${error}`, 'error');
-    // Potentially re-initialize to a default state if loading fails badly
-    // initializeGame(); // Uncomment if you want to reset to start on error
+    initializeGame();
     return false;
   }
 }
 
-// Add more functions as needed (e.g., undoMove, getHistory, etc.)
+/**
+ * Gets the PGN headers.
+ * @returns {object} An object containing the PGN headers (e.g., { White: '...', Black: '...' }). Returns empty object if game not loaded.
+ */
+export function getPgnHeaders() {
+  if (!chess) {
+    logDevelopment('Error: Game not initialized.', 'error');
+    return {};
+  }
+  return chess.getHeaders() || {}; // chess.js header() returns the headers object
+}
+
+/**
+ * Gets the game history (list of moves).
+ * Uses the verbose option to get detailed move objects.
+ * @returns {object[]} An array of move objects from chess.js history. Returns empty array if game not loaded.
+ */
+export function getGameHistory() {
+  if (!chess) {
+    logDevelopment('Error: Game not initialized.', 'error');
+    return [];
+  }
+  // Get history with verbose objects to potentially use more info later
+  // Return the stored history, not the history of the potentially modified 'chess' instance
+  return moveHistory;
+}
+
+
+/**
+ * Resets the game state to a specific move index in the history.
+ * Updates the internal chess object to reflect the position at that index.
+ * @param {number} index - The target move index (-1 for initial position).
+ * @returns {string|null} The FEN of the position at the target index, or null on error.
+ */
+export function goToMoveIndex(index) {
+  if (!initialFen) return null;
+  if (index < -1 || index >= moveHistory.length) return null;
+
+  chess.reset(); // use chess.load(initialFen) if starting FEN is not standard
+
+  for (let i = 0; i <= index; i++) {
+    if (!chess.move(moveHistory[i].san)) return null;
+  }
+  currentMoveIndex = index;
+  return chess.fen();
+}
+
+// --- Navigation Functions ---
+
+/**
+ * Goes to the starting position of the game.
+ * @returns {string|null} The FEN of the starting position or null on error.
+ */
+export function goToStart() {
+  logDevelopment('Navigating to start.');
+  return goToMoveIndex(-1);
+}
+
+/**
+ * Goes to the previous move.
+ * @returns {string|null} The FEN of the previous position or null if already at start or on error.
+ */
+export function goToPreviousMove() {
+  if (currentMoveIndex < 0) {
+    logDevelopment('Already at the start.');
+    return null; // Cannot go back further
+  }
+  logDevelopment(`Navigating to previous move (index ${currentMoveIndex - 1}).`);
+  return goToMoveIndex(currentMoveIndex - 1);
+}
+
+/**
+ * Goes to the next move.
+ * @returns {string|null} The FEN of the next position or null if already at the end or on error.
+ */
+export function goToNextMove() {
+  if (currentMoveIndex >= moveHistory.length - 1) {
+    logDevelopment('Already at the end.');
+    return null; // Cannot go forward further
+  }
+  logDevelopment(`Navigating to next move (index ${currentMoveIndex + 1}).`);
+  return goToMoveIndex(currentMoveIndex + 1);
+}
+
+/**
+ * Goes to the final position of the game.
+ * @returns {string|null} The FEN of the final position or null on error.
+ */
+export function goToEnd() {
+  logDevelopment('Navigating to end.');
+  return goToMoveIndex(moveHistory.length - 1);
+}
+
+/**
+ * Gets the current move index. Useful for highlighting the current move in the UI.
+ * @returns {number} The current move index (-1 for start).
+ */
+export function getCurrentMoveIndex() {
+  return currentMoveIndex;
+}
+
+// --- End Navigation Functions ---

@@ -26,7 +26,7 @@
     <div class="row">
       <div class="offcanvas offcanvas-start bg-light" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
         <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasSidebarLabel" data-i18n="sidebar.pgnFilesTitle">PGN Files</h5><button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button> <!-- Changed key and default text -->
+          <h5 class="offcanvas-title" id="offcanvasSidebarLabel" data-i18n="sidebar.pgnFilesTitle">PGN Files</h5><button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
           <div class="d-flex justify-content-end mb-2">
@@ -135,11 +135,24 @@
                 </button>
               </div>
             </div>
-            <div class="mb-3"> <!-- Textarea and label moved down -->
+            <div id="pgn-info-display" class="mb-3">
+              <div id="pgn-headers" class="mb-2 small">
+                <!-- Headers will be populated by JS -->
+                <span class="pgn-header-item"><strong data-i18n="pgnViewer.header.white">White:</strong> <span id="pgn-header-white">-</span></span> |
+                <span class="pgn-header-item"><strong data-i18n="pgnViewer.header.black">Black:</strong> <span id="pgn-header-black">-</span></span> |
+                <span class="pgn-header-item"><strong data-i18n="pgnViewer.header.result">Result:</strong> <span id="pgn-header-result">-</span></span><span class="d-none d-md-inline"> |</span><br class="d-md-none">
+                <span class="pgn-header-item"><strong data-i18n="pgnViewer.header.event">Event:</strong> <span id="pgn-header-event">-</span></span> |
+                <span class="pgn-header-item"><strong data-i18n="pgnViewer.header.date">Date:</strong> <span id="pgn-header-date">-</span></span>
+              </div>
+              <div id="pgn-moves-list" class="list-group list-group-flush border rounded" style="max-height: 200px; overflow-y: auto;">
+                <!-- Moves will be populated by JS -->
+                <span class="list-group-item py-1" data-i18n="pgnViewer.noGameLoaded">No game loaded.</span>
+              </div>
+            </div>
+            <div class="mb-3">
               <label for="pgn-input" class="form-label" data-i18n="pgnViewer.pgnInputLabel">PGN Input:</label>
               <textarea class="form-control" id="pgn-input" rows="10" placeholder="Paste PGN here..." data-i18n="[placeholder]pgnViewer.pgnInputPlaceholder"></textarea>
             </div>
-            <!-- Removed template example sections -->
           </div>
         </div>
       </main>
@@ -173,7 +186,7 @@
         <div class="modal-body">
           <form id="addFileForm" name="addFileForm">
             <div class="mb-3">
-              <label for="newFileNameInput" class="form-label" data-i18n="modal.addPgnFile.fileNameLabel">File Name:</label> <input type="text" class="form-control" id="newFileNameInput" placeholder="e.g., kasparov_deep_blue.pgn" required="" data-i18n="[placeholder]modal.addPgnFile.fileNamePlaceholder"> <!-- Changed key and placeholder -->
+              <label for="newFileNameInput" class="form-label" data-i18n="modal.addPgnFile.fileNameLabel">File Name:</label> <input type="text" class="form-control" id="newFileNameInput" placeholder="e.g., kasparov_deep_blue.pgn" required="" data-i18n="[placeholder]modal.addPgnFile.fileNamePlaceholder">
               <div class="form-text" data-i18n="modal.addPgnFile.fileNameHelp">
                 Must end with .pgn (will be added if missing).
               </div>
@@ -181,7 +194,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-complementary btn-rounded" data-bs-dismiss="modal" data-i18n="modal.button.cancel">Cancel</button> <button type="submit" class="btn btn-primary btn-rounded" form="addFileForm" data-i18n="modal.addPgnFile.button.add">Add PGN File</button> <!-- Changed key -->
+          <button type="button" class="btn btn-complementary btn-rounded" data-bs-dismiss="modal" data-i18n="modal.button.cancel">Cancel</button> <button type="submit" class="btn btn-primary btn-rounded" form="addFileForm" data-i18n="modal.addPgnFile.button.add">Add PGN File</button>
         </div>
       </div>
     </div>
@@ -194,7 +207,7 @@
         </div>
         <div class="modal-body">
           <form id="renameFileForm" name="renameFileForm">
-            <p data-i18n="modal.renamePgnFile.body.renamingLabel">Renaming: <strong id="currentFileNameToRename"></strong></p> <!-- Changed key -->
+            <p data-i18n="modal.renamePgnFile.body.renamingLabel">Renaming: <strong id="currentFileNameToRename"></strong></p>
             <div class="mb-3">
               <label for="newRenameFileNameInput" class="form-label" data-i18n="modal.renamePgnFile.newFileNameLabel">New File Name:</label> <input type="text" class="form-control" id="newRenameFileNameInput" placeholder="e.g., kasparov_deep_blue_final.pgn" required="" data-i18n="[placeholder]modal.renamePgnFile.newFileNamePlaceholder">
               <div class="form-text" data-i18n="modal.renamePgnFile.newFileNameHelp">
@@ -238,7 +251,6 @@
   <script src="/assets/js/lib/brands-6.7.2.min.js"></script>
   <script src="/assets/js/lib/solid-6.7.2.min.js"></script>
   <script src="/assets/js/lib/dropbox-sdk-10.34.0.min.js"></script>
-  <script src="/assets/js/lib/chess-0.13.4.min.js" type="module"></script>
   <script src="/assets/js/cache.js"></script>
   <script src="/assets/js/dropbox-sync.js" type="module"></script>
   <script src="/assets/js/pgn-viewer.js" type="module"></script>

@@ -31,7 +31,15 @@
       "previous": "前の手へ",
       "next": "次の手へ",
       "end": "最終手へ"
-    }
+    },
+    "header": {
+      "white": "白:",
+      "black": "黒:",
+      "result": "結果:",
+      "event": "イベント:",
+      "date": "日付:"
+    },
+    "noGameLoaded": "ゲームはロードされていません。"
   },
   "modal": {
     "conflict": {

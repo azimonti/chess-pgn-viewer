@@ -31,7 +31,15 @@
       "previous": "Previous Move",
       "next": "Next Move",
       "end": "Go to End"
-    }
+    },
+    "header": {
+      "white": "Bianco:",
+      "black": "Nero:",
+      "result": "Risultato:",
+      "event": "Evento:",
+      "date": "Data:"
+    },
+    "noGameLoaded": "No game loaded."
   },
   "modal": {
     "conflict": {

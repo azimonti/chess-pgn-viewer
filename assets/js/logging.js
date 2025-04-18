@@ -32,7 +32,7 @@ function getCallerInfo() {
 }
 
 // --- Development Logging ---
-const DEVELOPMENT_LOGGING_ENABLED = true; // <<< Toggle this flag for development logs
+const DEVELOPMENT_LOGGING_ENABLED = false; // <<< Toggle this flag for development logs
 /**
  * Logs messages with caller info if DEVELOPMENT_LOGGING_ENABLED is true.
  * @param {...any} args - Arguments to pass to console.log.

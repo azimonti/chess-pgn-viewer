@@ -303,7 +303,7 @@ body {
   font-size: 2em; /* Example size for pieces */
 }
 
-.square.light { background-color: #F8F8F2; }
+.square.light { background-color: #DBDBBD; }
 .square.dark  { background-color: #0083B3; }
 
 .square.light.selected { background-color: #F8F9FA; }

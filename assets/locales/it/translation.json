@@ -31,7 +31,15 @@
       "previous": "Mossa Precedente",
       "next": "Mossa Successiva",
       "end": "Vai alla Fine"
-    }
+    },
+    "header": {
+      "white": "Bianco:",
+      "black": "Nero:",
+      "result": "Risultato:",
+      "event": "Evento:",
+      "date": "Data:"
+    },
+    "noGameLoaded": "Nessun gioco caricato."
   },
   "modal": {
     "conflict": {
