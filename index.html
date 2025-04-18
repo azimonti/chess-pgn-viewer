@@ -105,22 +105,9 @@
               </div>
             </div>
           </div>
-
-          <!-- PGN Input and Controls Area -->
-          <div id="pgn-controls-container" class="col-lg-5 col-xl-6 col-12"> <!-- Adjusted columns -->
-            <div class="d-flex justify-content-between align-items-center flex-wrap mb-3"> <!-- Moved buttons up, added mb-3 -->
-              <div>
-                <button class="btn btn-light me-1" id="btn-flip-board" title="Flip Board" data-i18n="[title]pgnViewer.button.flip">
-                  <i class="fa-solid fa-rotate"></i>
-                </button>
-                <button class="btn btn-light me-1" id="btn-cycle-pieces" title="Cycle Piece Set" data-i18n="[title]pgnViewer.button.cyclePieces">
-                  <i class="fa-solid fa-chess"></i>
-                </button>
-                <button class="btn btn-light me-1" id="btn-load-pgn" title="Load PGN from Text Area" data-i18n="[title]pgnViewer.button.loadPgn"> <!-- Added Load PGN button -->
-                  <i class="fa-solid fa-upload"></i>
-                </button>
-              </div>
-              <div>
+          <div id="pgn-controls-container" class="col-lg-5 col-xl-6 col-12">
+            <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center flex-wrap mb-3">
+              <div class="mx-auto me-md-auto ms-md-0 text-center text-md-start">
                 <button class="btn btn-light me-1" id="btn-start" title="Go to Start" data-i18n="[title]pgnViewer.button.start">
                   <i class="fa-solid fa-angles-left"></i>
                 </button>
@@ -132,6 +119,23 @@
                 </button>
                 <button class="btn btn-light" id="btn-end" title="Go to End" data-i18n="[title]pgnViewer.button.end">
                   <i class="fa-solid fa-angles-right"></i>
+                </button>
+              </div>
+              <div class="mt-2 mt-md-0 mx-auto ms-md-auto me-md-0 text-center text-md-start">
+                <button class="btn btn-light me-1 d-inline-block d-md-inline" id="btn-flip-board" title="Flip Board" data-i18n="[title]pgnViewer.button.flip">
+                  <i class="fa-solid fa-rotate"></i>
+                </button>
+                <button class="btn btn-light me-1 d-inline-block d-md-inline" id="btn-reset" title="Reset" data-i18n="[title]pgnViewer.button.reset">
+                  <i class="fa-solid fa-chess-board"></i>
+                </button>
+                <button class="btn btn-light me-1 d-inline-block d-md-inline" id="btn-cycle-pieces" title="Cycle Piece Set" data-i18n="[title]pgnViewer.button.cyclePieces">
+                  <i class="fa-solid fa-chess"></i>
+                </button>
+                <button class="btn btn-light me-1 d-inline-block d-md-inline" id="btn-load-pgn" title="Load PGN from Text Area" data-i18n="[title]pgnViewer.button.loadPgn">
+                  <i class="fa-solid fa-upload"></i>
+                </button>
+                <button class="btn btn-light d-inline-block d-md-inline" id="btn-save-pgn" title="Save PGN to File" data-i18n="[title]pgnViewer.button.savePgn">
+                  <i class="fa-solid fa-save"></i>
                 </button>
               </div>
             </div>
@@ -254,8 +258,6 @@
   <script src="/assets/js/cache.js"></script>
   <script src="/assets/js/dropbox-sync.js" type="module"></script>
   <script src="/assets/js/pgn-viewer.js" type="module"></script>
-  <script src="/assets/js/switch.js"></script>
-  <script src="/assets/js/notif.js"></script>
 </body>
   <script>
     if ('serviceWorker' in navigator) {

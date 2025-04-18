@@ -308,4 +308,27 @@ export function getCurrentMoveIndex() {
   return currentMoveIndex;
 }
 
+/**
+ * Resets the entire game view state to the standard starting position.
+ * Clears loaded PGN data (history, headers, initial FEN).
+ * @returns {boolean} True if reset was successful, false otherwise.
+ */
+export function resetGameView() {
+  logDevelopment('Resetting game view to initial state.');
+  try {
+    // Re-initialize with the default starting position
+    initializeGame(); // This already handles setting chess, initialFen, history, index
+    if (chess) {
+      logDevelopment('Game view reset successfully.');
+      return true;
+    } else {
+      logDevelopment('Failed to reset game view (chess object is null after re-initialization).', 'error');
+      return false;
+    }
+  } catch (error) {
+    logDevelopment(`Error during game view reset: ${error}`, 'error');
+    return false;
+  }
+}
+
 // --- End Navigation Functions ---

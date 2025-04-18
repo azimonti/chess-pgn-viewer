@@ -27,13 +27,15 @@
       "flip": "Flip Board",
       "cyclePieces": "Cycle Piece Set",
       "loadPgn": "Load PGN from Text Area",
+      "reset": "Reset",
+      "savePgn": "Save PGN to File",
       "start": "Go to Start",
       "previous": "Previous Move",
       "next": "Next Move",
       "end": "Go to End"
     },
     "header": {
-      "white": "Bianco:",
+      "white": "White:",
       "black": "Nero:",
       "result": "Risultato:",
       "event": "Evento:",
@@ -97,7 +99,21 @@
     "stalemate": "Stalemate! The game is a draw.",
     "threefoldRepetition": "Draw by threefold repetition.",
     "draw": "Draw! (Insufficient material or 50-move rule)",
-    "gameOverTitle": "Game Over"
+    "gameOverTitle": "Game Over",
+    "pgnInputEmpty": "PGN input area is empty.",
+    "titleInfo": "Info",
+    "pgnLoadSuccess": "PGN loaded successfully.",
+    "titleSuccess": "Success",
+    "pgnLoadError": "Could not load game from PGN text.",
+    "titleAlert": "Alert",
+    "pgnLoadUnknownError": "Unknown error during PGN loading.",
+    "pgnLoadErrorDetail": "Error loading PGN: {{error}}",
+    "gameResetSuccess": "Game reset to starting position.",
+    "gameResetError": "Failed to reset game.",
+    "renameDefaultError": "Error: The default file cannot be renamed.",
+    "findFileError": "Error: Could not find the current file details.",
+    "deleteDefaultError": "Error: The default file cannot be deleted.",
+    "deleteModalMissingError": "Error: Delete confirmation dialog component is missing."
   },
   "languageSwitcher": {
     "header": "Language"

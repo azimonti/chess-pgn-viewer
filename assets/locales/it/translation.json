@@ -27,6 +27,8 @@
       "flip": "Capovolgi Scacchiera",
       "cyclePieces": "Cambia Set Pezzi",
       "loadPgn": "Carica PGN dall'Area di Testo",
+      "reset": "Reimposta",
+      "savePgn": "Salva PGN su File",
       "start": "Vai all'Inizio",
       "previous": "Mossa Precedente",
       "next": "Mossa Successiva",
@@ -97,7 +99,21 @@
     "stalemate": "Stallo! La partita è patta.",
     "threefoldRepetition": "Patta per ripetizione di posizione.",
     "draw": "Patta! (Materiale insufficiente o regola delle 50 mosse)",
-    "gameOverTitle": "Partita Finita"
+    "gameOverTitle": "Partita Finita",
+    "pgnInputEmpty": "Area di input PGN vuota.",
+    "titleInfo": "Info",
+    "pgnLoadSuccess": "PGN caricato con successo.",
+    "titleSuccess": "Successo",
+    "pgnLoadError": "Impossibile caricare la partita dal testo PGN.",
+    "titleAlert": "Avviso",
+    "pgnLoadUnknownError": "Errore sconosciuto durante il caricamento del PGN.",
+    "pgnLoadErrorDetail": "Errore caricamento PGN: {{error}}",
+    "gameResetSuccess": "Partita reimpostata alla posizione iniziale.",
+    "gameResetError": "Impossibile reimpostare la partita.",
+    "renameDefaultError": "Errore: Il file predefinito non può essere rinominato.",
+    "findFileError": "Errore: Impossibile trovare i dettagli del file corrente.",
+    "deleteDefaultError": "Errore: Il file predefinito non può essere eliminato.",
+    "deleteModalMissingError": "Errore: Componente dialogo di conferma eliminazione mancante."
   },
   "languageSwitcher": {
     "header": "Lingua"
