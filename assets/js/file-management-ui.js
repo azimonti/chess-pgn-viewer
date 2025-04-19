@@ -10,7 +10,6 @@ import {
   setupRenameFileModalListeners,
   setupDeleteFileConfirmListener
 } from './storage/files.js';
-import { logDevelopment } from './logging.js';
 
 // --- DOM Element Selectors ---
 const addFileButton = $('#addFileButton');
@@ -27,8 +26,6 @@ let renameFileModalInstance = null;
 // --- Event Listener Setup ---
 
 export function initializeFileManagementListeners() {
-  logDevelopment("Initializing file management listeners.");
-
   // Setup the listener for the delete confirmation button *once*
   // This assumes setupDeleteFileConfirmListener handles attaching the actual delete logic
   setupDeleteFileConfirmListener();
@@ -48,12 +45,11 @@ export function initializeFileManagementListeners() {
       }
 
       if (!addFileModalInstance) {
-        logDevelopment("Initializing Add File Modal instance and listeners for the first time.");
         addFileModalInstance = new window.bootstrap.Modal(addModalElement);
         // Setup listeners specific to the add modal *content* (like the save button inside)
         setupAddFileModalListeners();
       } else {
-        logDevelopment("Add File Modal instance already exists.");
+        console.warn("Add File Modal instance already exists.");
       }
 
       newFileNameInput.val(''); // Clear input before showing
@@ -81,12 +77,11 @@ export function initializeFileManagementListeners() {
       }
 
       if (!renameFileModalInstance) {
-        logDevelopment("Initializing Rename File Modal instance and listeners for the first time.");
         renameFileModalInstance = new window.bootstrap.Modal(renameModalElement);
         // Setup listeners specific to the rename modal *content*
         setupRenameFileModalListeners();
       } else {
-        logDevelopment("Rename File Modal instance already exists.");
+        console.warn("Rename File Modal instance already exists.");
       }
 
       const currentFilePath = getActiveFile();
@@ -147,8 +142,6 @@ export function initializeFileManagementListeners() {
       }
       return;
     }
-
-    logDevelopment(`Requesting delete confirmation for file: ${fileToDelete.name} (${filePathToDelete})`);
 
     // Populate the confirmation modal before showing
     $('#fileNameToDelete').text(fileToDelete.name);

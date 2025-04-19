@@ -392,3 +392,48 @@ body {
   position: relative; /* Needed for z-index */
   z-index: 1;
 }
+
+/* PGN Paragraph Display Styles */
+#pgn-moves-paragraph {
+  font-size: 0.9rem; /* Adjust base font size if needed */
+  line-height: 1.6; /* Improve readability */
+  white-space: pre-wrap; /* Allow wrapping but preserve spaces */
+  word-wrap: break-word; /* Break long words if necessary */
+}
+
+.pgn-move-number {
+  font-weight: bold;
+  color: #555; /* Slightly lighter than moves */
+  margin-right: 0.2em;
+}
+
+.pgn-move {
+  font-weight: bold;
+  color: #2C2C2C;
+  cursor: pointer; /* Indicate moves are clickable */
+  padding: 0.1em 0.2em; /* Add slight padding for better click target and visual separation */
+  border-radius: 3px; /* Slightly rounded corners */
+  transition: background-color 0.2s ease-in-out; /* Smooth transition for hover/active */
+}
+
+.pgn-move:hover {
+  background-color: #e9ecef; /* Light background on hover */
+}
+
+.pgn-comment {
+  font-style: italic;
+  color: #0083B3;
+  margin-left: 0.5em; /* Indent comments slightly */
+  display: inline-block; /* Allow margin */
+}
+
+.pgn-result {
+  font-weight: bold;
+  margin-left: 0.5em;
+  color: #333;
+}
+
+.pgn-move.active-move {
+  background-color: #0083B3; /* Use theme color for active highlight */
+  color: #FFF; /* White text on active highlight */
+}

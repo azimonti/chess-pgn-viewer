@@ -1,5 +1,4 @@
 'use strict';
-import { logDevelopment } from './logging.js';
 import {
   makeMove,
   getCurrentFen,
@@ -85,7 +84,6 @@ function highlightSelection(squareEl, algebraic) {
   selectedSquareEl.classList.add(CSS_CLASSES.SELECTED);
 
   validMoveSquares = getValidMoves(algebraic);
-  logDevelopment(`Valid moves for ${algebraic}: ${validMoveSquares.join(', ')}`);
 
   validMoveSquares.forEach(moveAlgebraic => {
     const moveSquareEl = document.querySelector(`[data-square="${moveAlgebraic}"]`);
@@ -106,15 +104,13 @@ function handleSquareClick(event) {
   const clickedAlgebraic = clickedSquareEl.dataset.square;
 
   if (!clickedAlgebraic) {
-    logDevelopment('Clicked element has no square data attribute.', 'warn');
+    console.warn('Clicked element has no square data attribute.');
     return;
   }
 
   const piece = getPieceAt(clickedAlgebraic);
   const turn = getTurn(); // 'w' or 'b'
   const playerColor = isBoardFlipped ? 'b' : 'w'; // Color at the bottom
-
-  logDevelopment(`Square clicked: ${clickedAlgebraic}, Piece: ${piece ? piece.color + piece.type : 'none'}, Turn: ${turn}, Player at bottom: ${playerColor}`);
 
   // --- Move Attempt ---
   if (selectedSquareAlgebraic) {
@@ -126,17 +122,15 @@ function handleSquareClick(event) {
 
     // Check if the clicked square is a valid move destination
     if (validMoveSquares.includes(clickedAlgebraic)) {
-      logDevelopment(`Attempting move: ${selectedSquareAlgebraic} to ${clickedAlgebraic}`);
       const moveResult = makeMove(selectedSquareAlgebraic, clickedAlgebraic);
       clearHighlights(); // Clear highlights regardless of move success
       if (moveResult) {
         // Successful move - re-render the board
-        logDevelopment('Move successful, re-rendering board.');
         renderBoard(document.getElementById('chessboard'), getCurrentFen());
         // Check for game over state? (optional here)
       } else {
         // Invalid move according to chess.js (shouldn't happen if UI checks are correct)
-        logDevelopment('Move invalid by chess.js despite UI check.', 'warn');
+        console.warn('Move invalid by chess.js despite UI check.');
       }
       return; // Move attempted, finish handling
     }
@@ -145,10 +139,9 @@ function handleSquareClick(event) {
   // --- Piece Selection ---
   clearHighlights(); // Clear any previous selection if move wasn't made
   if (piece && piece.color === turn) {
-    logDevelopment(`Selecting piece ${piece.color}${piece.type} at ${clickedAlgebraic}`);
     highlightSelection(clickedSquareEl, clickedAlgebraic);
   } else {
-    logDevelopment(`Cannot select square ${clickedAlgebraic}: Empty or not current player's piece.`);
+    // Optionally log or provide feedback if selection is invalid
   }
 }
 
@@ -160,7 +153,6 @@ function handleSquareClick(event) {
  */
 export function cyclePieceSet() {
   currentPieceSetIndex = (currentPieceSetIndex + 1) % PIECE_SETS.length;
-  logDevelopment(`Cycling to piece set: ${PIECE_SETS[currentPieceSetIndex]}`);
   renderBoard(document.getElementById('chessboard'), getCurrentFen()); // Re-render with current FEN
 }
 
@@ -177,7 +169,6 @@ export function getIsBoardFlipped() {
  */
 export function flipBoard() {
   isBoardFlipped = !isBoardFlipped;
-  logDevelopment(`Board flipped: ${isBoardFlipped}`);
   clearHighlights(); // Clear selection when flipping
   renderBoard(document.getElementById('chessboard'), getCurrentFen()); // Re-render with current FEN
 }
@@ -189,15 +180,14 @@ export function flipBoard() {
  */
 export function renderBoard(boardContainer, fen) {
   if (!boardContainer) {
-    logDevelopment('Error: Chessboard container not found!', 'error');
+    console.error('Error: Chessboard container not found!');
     return;
   }
   if (!fen) {
-    logDevelopment('Error: No FEN provided for rendering!', 'error');
+    console.error('Error: No FEN provided for rendering!');
     return;
   }
 
-  logDevelopment(`Rendering board for FEN: ${fen}`);
   boardContainer.innerHTML = ''; // Clear previous board
 
   // --- Create Indices ---
@@ -246,7 +236,7 @@ export function renderBoard(boardContainer, fen) {
           pieceImage.classList.add(CSS_CLASSES.CHESS_PIECE);
           square.appendChild(pieceImage);
         } else {
-          logDevelopment(`Warning: No image mapping found for FEN character: ${char}`, 'warn');
+          console.warn(`Warning: No image mapping found for FEN character: ${char}`);
         }
         boardGrid.appendChild(square);
         currentFileIndex++;

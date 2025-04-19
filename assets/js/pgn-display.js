@@ -1,9 +1,8 @@
 'use strict';
 
-import { logDevelopment } from './logging.js';
 import { renderBoard, flipBoard, cyclePieceSet } from './board-ui.js';
 import {
-  initializeGame, getCurrentFen, loadPgn, getPgnHeaders, getGameHistory,
+  initializeGame, getCurrentFen, loadPgn, getPgnHeaders, getGameHistory, getGameComments, // Added getGameComments
   goToStart, goToPreviousMove, goToNextMove, goToEnd, getCurrentMoveIndex,
   goToMoveIndex,
   resetGameView
@@ -26,10 +25,10 @@ const pgnHeaderBlack = $('#pgn-header-black');
 const pgnHeaderResult = $('#pgn-header-result');
 const pgnHeaderEvent = $('#pgn-header-event');
 const pgnHeaderDate = $('#pgn-header-date');
-const pgnMovesList = $('#pgn-moves-list');
+const pgnMovesParagraph = $('#pgn-moves-paragraph'); // Changed ID
 
 // fix PGN for development
-const FIXPGN = true;
+const FIXPGN = false;
 
 // --- Helper Functions for PGN Display ---
 
@@ -38,7 +37,6 @@ const FIXPGN = true;
  * @param {object} headers - The headers object from chess.js (e.g., { White: '...', Black: '...' }).
  */
 function displayPgnHeaders(headers) {
-  logDevelopment("Updating PGN header display.", 'debug');
   pgnHeaderWhite.text(headers.White || 'N/A');
   pgnHeaderBlack.text(headers.Black || 'N/A');
   pgnHeaderResult.text(headers.Result || 'N/A');
@@ -47,78 +45,128 @@ function displayPgnHeaders(headers) {
 }
 
 /**
- * Updates the PGN moves list display and adds highlighting capabilities.
+ * Helper function to simplify a FEN string for use as a key in the comments map.
+ * Removes move counters (halfmove clock and fullmove number).
+ * @param {string} fen - The full FEN string.
+ * @returns {string} The simplified FEN string (board, turn, castling, en passant).
+ */
+function simplifyFenForKey(fen) {
+  if (!fen) return '';
+  const parts = fen.split(' ');
+  // Keep the first 4 parts: board, turn, castling rights, en passant target square
+  if (parts.length >= 4) {
+    return parts.slice(0, 4).join(' ');
+  }
+  // Fallback for incomplete FENs, though unlikely here
+  return fen;
+}
+
+
+/**
+ * Updates the PGN moves paragraph display, including comments and highlighting capabilities.
  * @param {object[]} history - The verbose move history array from chess.js.
  */
 function displayPgnMoves(history) {
-  logDevelopment(`Updating PGN moves display with ${history.length} moves.`, 'debug');
-  pgnMovesList.empty(); // Clear previous moves
+  pgnMovesParagraph.empty(); // Clear previous moves
+  const comments = getGameComments(); // Get comments array [{fen: ..., comment: ...}, ...]
+  // Create map using simplified FENs as keys for more robust matching
+  const commentsMap = new Map(comments.map(c => [simplifyFenForKey(c.fen), c.comment]));
 
   if (history.length === 0) {
-    pgnMovesList.append(`<li class="list-group-item p-1" data-i18n="pgnViewer.noGameLoaded">No game loaded.</li>`);
+    pgnMovesParagraph.append(`<span data-i18n="pgnViewer.noGameLoaded">No game loaded.</span>`);
     if (window.i18next && window.applyI18nToElement) {
-      window.applyI18nToElement(pgnMovesList.children().last()[0]);
+      window.applyI18nToElement(pgnMovesParagraph.children().last()[0]);
     }
     return;
   }
 
   let moveNumber = 1;
-  let movePairIndex = 0;
-  let fullMoveHtml = '';
 
   history.forEach((move, index) => {
-    const moveHtml = `<span class="move ${move.color === 'w' ? 'white-move' : 'black-move'}" data-move-index="${index}">${move.san}</span>`;
-
+    // Add move number for white's move
     if (move.color === 'w') {
-      if (fullMoveHtml) {
-        pgnMovesList.append(`<li class="list-group-item p-1" data-move-pair-index="${movePairIndex}">${fullMoveHtml}</li>`);
-        movePairIndex++;
+      pgnMovesParagraph.append(`<span class="pgn-move-number">${moveNumber}.</span> `);
+    }
+
+    // Add the move itself
+    const moveSpan = $(`<span class="pgn-move" data-move-index="${index}">${move.san}</span>`);
+    pgnMovesParagraph.append(moveSpan);
+    pgnMovesParagraph.append(' '); // Add space after the move
+
+    // Add comment if present (lookup using simplified FEN *before* the move)
+    const simplifiedFenBefore = simplifyFenForKey(move.before);
+    const commentText = commentsMap.get(simplifiedFenBefore);
+    if (commentText) {
+      const trimmedComment = commentText.trim();
+      // Remove potential curly braces from the comment text itself
+      const displayComment = trimmedComment.replace(/^\{|\}$/g, '').trim();
+      const commentSpan = $(`<span class="pgn-comment">${displayComment}</span>`);
+      // Simple heuristic: add a break before longer comments or those with internal newlines
+      if (trimmedComment.length > 50 || trimmedComment.includes('\n')) {
+        pgnMovesParagraph.append('<br>');
       }
-      fullMoveHtml = `<span class="move-number">${moveNumber}.</span> ${moveHtml}`;
+      pgnMovesParagraph.append(commentSpan);
+      pgnMovesParagraph.append(' '); // Add space after the comment
+    }
+
+    // Increment move number after black's move
+    if (move.color === 'b') {
       moveNumber++;
-    } else {
-      fullMoveHtml += ` ${moveHtml}`;
-      pgnMovesList.append(`<li class="list-group-item p-1" data-move-pair-index="${movePairIndex}">${fullMoveHtml}</li>`);
-      movePairIndex++;
-      fullMoveHtml = '';
     }
   });
 
-  if (fullMoveHtml) {
-    pgnMovesList.append(`<li class="list-group-item p-1" data-move-pair-index="${movePairIndex}">${fullMoveHtml}</li>`);
+  // Add the game result if available in the history (last item often has it)
+  const lastMove = history[history.length - 1];
+  if (lastMove && lastMove.flags && lastMove.flags.includes('k')) { // Checkmate flag
+    const result = getPgnHeaders().Result;
+    if (result && result !== '*') {
+      pgnMovesParagraph.append(`<span class="pgn-result">${result}</span>`);
+    }
+  } else {
+    const result = getPgnHeaders().Result;
+    if (result && result !== '*') {
+      pgnMovesParagraph.append(`<span class="pgn-result">${result}</span>`);
+    }
   }
+
 
   highlightCurrentMove();
 }
 
 
 /**
- * Highlights the current move in the PGN moves list based on getCurrentMoveIndex().
+ * Highlights the current move in the PGN moves paragraph based on getCurrentMoveIndex().
  */
 function highlightCurrentMove() {
   const currentIdx = getCurrentMoveIndex();
-  logDevelopment(`Highlighting move index: ${currentIdx}`, 'debug');
 
-  pgnMovesList.find('li').removeClass('active');
-  pgnMovesList.find('span.move').removeClass('active-move');
+  // Remove previous highlight
+  pgnMovesParagraph.find('span.pgn-move').removeClass('active-move');
 
   if (currentIdx === -1) {
-    logDevelopment("At start, no move highlighted.", 'debug');
+    // Optionally scroll to top when at start
+    pgnMovesParagraph.scrollTop(0);
   } else {
-    const targetMoveSpan = pgnMovesList.find(`span.move[data-move-index="${currentIdx}"]`);
+    const targetMoveSpan = pgnMovesParagraph.find(`span.pgn-move[data-move-index="${currentIdx}"]`);
     if (targetMoveSpan.length) {
       targetMoveSpan.addClass('active-move');
-      const parentLi = targetMoveSpan.closest('li');
-      parentLi.addClass('active');
 
-      const listElement = pgnMovesList[0];
-      const listItemElement = parentLi[0];
-      if (listElement && listItemElement) {
-        listItemElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // Scroll the container to make the active move visible
+      const containerElement = pgnMovesParagraph[0];
+      const moveElement = targetMoveSpan[0];
+      if (containerElement && moveElement) {
+        // Calculate position relative to the container
+        const containerRect = containerElement.getBoundingClientRect();
+        const moveRect = moveElement.getBoundingClientRect();
+        const scrollOffset = moveRect.top - containerRect.top + containerElement.scrollTop - (containerElement.clientHeight / 3); // Aim for 1/3 down
+
+        containerElement.scrollTo({
+          top: scrollOffset,
+          behavior: 'smooth'
+        });
       }
-      logDevelopment(`Highlighted move SAN: ${targetMoveSpan.text()}`, 'debug');
     } else {
-      logDevelopment(`Could not find move span for index ${currentIdx} to highlight.`, 'warn');
+      console.warn(`Could not find move span for index ${currentIdx} to highlight.`); // Replaced logDevelopment with console.warn
     }
   }
 }
@@ -131,8 +179,6 @@ function updateBoardAndHighlight(fen) {
   if (fen && chessboardContainer.length) {
     renderBoard(chessboardContainer[0], fen);
     highlightCurrentMove();
-  } else if (!fen) {
-    logDevelopment("Navigation function returned null, no UI update.", 'debug');
   }
 }
 
@@ -140,7 +186,6 @@ function updateBoardAndHighlight(fen) {
  * Clears the PGN display areas (headers, moves, input).
  */
 function clearPgnDisplay() {
-  logDevelopment("Clearing PGN display areas.", 'debug');
   displayPgnHeaders({});
   displayPgnMoves([]);
   pgnInputArea.val('');
@@ -150,7 +195,6 @@ function clearPgnDisplay() {
  * Placeholder function for saving PGN to the current file.
  */
 function savePgnToFile() {
-  logDevelopment("Save PGN button clicked - functionality not yet implemented.", 'info');
   // Assuming showNotification is globally available or imported elsewhere if needed
   if (window.showNotification) {
     showNotification("Save PGN functionality is not yet implemented.", 'info');
@@ -161,7 +205,6 @@ function savePgnToFile() {
 // --- Event Listener Setup ---
 
 export function initializePgnDisplayListeners() {
-  logDevelopment("Initializing PGN display listeners.");
 
   // Flip board button listener
   flipBoardButton.click(function() {
@@ -169,13 +212,10 @@ export function initializePgnDisplayListeners() {
     const STARTING_FEN_BLACK_TURN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1';
 
     if (getCurrentFen() === STARTING_FEN_WHITE_TURN) {
-      logDevelopment('Current: Start White. Setting Start Black.');
       initializeGame(STARTING_FEN_BLACK_TURN);
     } else if (getCurrentFen() === STARTING_FEN_BLACK_TURN) {
-      logDevelopment('Current: Start Black. Setting Start White.');
       initializeGame(STARTING_FEN_WHITE_TURN);
     }
-    logDevelopment("Flip board button clicked.");
     flipBoard();
     // Re-render after potential game state change and flip
     updateBoardAndHighlight(getCurrentFen());
@@ -183,7 +223,6 @@ export function initializePgnDisplayListeners() {
 
   // Cycle piece set button listener
   cyclePiecesButton.click(function() {
-    logDevelopment("Cycle piece set button clicked.");
     cyclePieceSet();
     // Re-render after cycling pieces to apply the new set
     updateBoardAndHighlight(getCurrentFen());
@@ -191,7 +230,6 @@ export function initializePgnDisplayListeners() {
 
   // Load PGN from text area button listener
   loadPgnButton.click(function() {
-    logDevelopment("Load PGN button clicked.");
     const pgnExample = [
       '[Event "Casual Game"]',
       '[Site "Berlin GER"]',
@@ -225,7 +263,6 @@ export function initializePgnDisplayListeners() {
 
     try {
       if (loadPgn(pgnToLoad)) {
-        logDevelopment("PGN loaded successfully.");
         const headers = getPgnHeaders();
         const history = getGameHistory();
         displayPgnHeaders(headers);
@@ -238,15 +275,14 @@ export function initializePgnDisplayListeners() {
       } else {
         displayPgnHeaders({});
         displayPgnMoves([]);
-        logDevelopment("Failed to load PGN (loadPgn returned false).", 'warn');
+        console.warn("Failed to load PGN (loadPgn returned false)."); // Replaced logDevelopment with console.warn
         if (window.showNotification && window.i18next) {
           showNotification(i18next.t('notification.pgnLoadError', 'Could not load game from PGN text.'), 'alert', i18next.t('notification.titleAlert', 'Alert'));
         }
       }
     } catch (error) {
       const errorMessage = error.message || (window.i18next ? i18next.t('notification.pgnLoadUnknownError', 'Unknown error during PGN loading.') : 'Unknown error during PGN loading.');
-      logDevelopment(`Error loading PGN: ${errorMessage}`, 'error');
-      console.error("Error loading PGN:", error);
+      console.error(`Error loading PGN: ${errorMessage}`, error); // Replaced logDevelopment with console.error
       if (window.showNotification && window.i18next) {
         showNotification(i18next.t('notification.pgnLoadErrorDetail', 'Error loading PGN: {{error}}', { error: errorMessage }), 'alert', i18next.t('notification.titleAlert', 'Alert'));
       }
@@ -255,7 +291,6 @@ export function initializePgnDisplayListeners() {
 
   // --- Control Button Listeners ---
   resetButton.click(function() {
-    logDevelopment("Reset button clicked.");
     if (resetGameView()) {
       clearPgnDisplay();
       updateBoardAndHighlight(getCurrentFen());
@@ -275,34 +310,29 @@ export function initializePgnDisplayListeners() {
 
   // --- Navigation Button Listeners ---
   startButton.click(function() {
-    logDevelopment("Start button clicked.");
     const newFen = goToStart();
     updateBoardAndHighlight(newFen);
   });
 
   prevButton.click(function() {
-    logDevelopment("Previous button clicked.");
     const newFen = goToPreviousMove();
     updateBoardAndHighlight(newFen);
   });
 
   nextButton.click(function() {
-    logDevelopment("Next button clicked.");
     const newFen = goToNextMove();
     updateBoardAndHighlight(newFen);
   });
 
   endButton.click(function() {
-    logDevelopment("End button clicked.");
     const newFen = goToEnd();
     updateBoardAndHighlight(newFen);
   });
 
-  // --- Move List Click Listener ---
-  pgnMovesList.on('click', 'span.move', function() {
+  // --- Move Paragraph Click Listener ---
+  pgnMovesParagraph.on('click', 'span.pgn-move', function() { // Changed target
     const clickedIndex = $(this).data('move-index');
     if (typeof clickedIndex !== 'undefined') {
-      logDevelopment(`Move span clicked, navigating to index: ${clickedIndex}`);
       const newFen = goToMoveIndex(parseInt(clickedIndex, 10));
       updateBoardAndHighlight(newFen);
     }
@@ -310,19 +340,18 @@ export function initializePgnDisplayListeners() {
 
   // Initial render on load
   if (chessboardContainer.length) {
-    logDevelopment("Rendering initial chessboard from game state in pgn-display.");
     updateBoardAndHighlight(getCurrentFen()); // Use the helper to render and highlight
     // Also display initial headers and moves if a game is loaded by default
     const initialHeaders = getPgnHeaders();
     const initialHistory = getGameHistory();
     if (initialHistory.length > 0 || Object.keys(initialHeaders).length > 0) {
       displayPgnHeaders(initialHeaders);
-      displayPgnMoves(initialHistory);
+      displayPgnMoves(initialHistory); // This will now call the updated function
     } else {
       // Ensure display is cleared if no game is loaded initially
-      clearPgnDisplay();
+      clearPgnDisplay(); // This clears headers and calls displayPgnMoves([])
     }
   } else {
-    logDevelopment("Error: Chessboard container element not found!", 'error');
+    console.error("Error: Chessboard container element not found!"); // Replaced logDevelopment with console.error
   }
 }

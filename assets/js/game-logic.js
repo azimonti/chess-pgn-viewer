@@ -1,5 +1,4 @@
 'use strict';
-import { logDevelopment } from './logging.js';
 import { Chess } from './lib/chess-1.2.0.min.js';
 import { getIsBoardFlipped } from './board-ui.js';
 
@@ -20,10 +19,9 @@ export function initializeGame(fen = null) {
     initialFen = startFen; // Store the initial FEN
     moveHistory = []; // Clear history
     currentMoveIndex = -1; // Reset index
-    logDevelopment(`Game initialized. Initial FEN: ${initialFen}`);
     return true;
   } catch (error) {
-    logDevelopment(`Error initializing chess.js: ${error}`, 'error');
+    console.error(`Error initializing chess.js: ${error}`);
     initialFen = null;
     moveHistory = [];
     currentMoveIndex = -1;
@@ -41,7 +39,7 @@ export function initializeGame(fen = null) {
  */
 export function makeMove(fromSq, toSq) {
   if (!chess) {
-    logDevelopment('Error: Game not initialized.', 'error');
+    console.error('Error: Game not initialized.');
     return null;
   }
   try {
@@ -54,16 +52,15 @@ export function makeMove(fromSq, toSq) {
     const moveResult = chess.move(moveOptions);
 
     if (moveResult) {
-      logDevelopment(`Move made: ${fromSq}-${toSq}. New FEN: ${chess.fen()}`);
       // --- Check game end conditions ---
       checkGameStatus(); // Call helper function
       // --- End Check ---
     } else {
-      logDevelopment(`Invalid move attempted: ${fromSq}-${toSq}`, 'warn');
+      console.warn(`Invalid move attempted: ${fromSq}-${toSq}`);
     }
     return moveResult; // Returns the move object or null if invalid
   } catch (error) {
-    logDevelopment(`Error making move ${fromSq}-${toSq}: ${error}`, 'error');
+    console.error(`Error making move ${fromSq}-${toSq}: ${error}`);
     return null;
   }
 }
@@ -74,7 +71,7 @@ export function makeMove(fromSq, toSq) {
  */
 export function getCurrentFen() {
   if (!chess) {
-    logDevelopment('Error: Game not initialized.', 'error');
+    console.error('Error: Game not initialized.');
     return null;
   }
   return chess.fen();
@@ -87,7 +84,7 @@ export function getCurrentFen() {
  */
 export function getPieceAt(square) {
   if (!chess) {
-    logDevelopment('Error: Game not initialized.', 'error');
+    console.error('Error: Game not initialized.');
     return null;
   }
   return chess.get(square);
@@ -100,7 +97,7 @@ export function getPieceAt(square) {
  */
 export function getValidMoves(square) {
   if (!chess) {
-    logDevelopment('Error: Game not initialized.', 'error');
+    console.error('Error: Game not initialized.');
     return [];
   }
   const moves = chess.moves({ square: square, verbose: true });
@@ -114,7 +111,7 @@ export function getValidMoves(square) {
  */
 export function getTurn() {
   if (!chess) {
-    logDevelopment('Error: Game not initialized.', 'error');
+    console.error('Error: Game not initialized.');
     return null;
   }
   return chess.turn();
@@ -126,7 +123,7 @@ export function getTurn() {
  */
 export function isGameOver() {
   if (!chess) {
-    logDevelopment('Error: Game not initialized.', 'error');
+    console.error('Error: Game not initialized.');
     return false; // Or handle as appropriate
   }
   return chess.isCheckmate() || chess.isStalemate() || chess.isThreefoldRepetition() || chess.isDraw();
@@ -172,7 +169,6 @@ function checkGameStatus() {
     const title = i18next.t('notification.gameOverTitle'); // Get localized title
     // Call global function directly with title and 0 duration
     window.showNotification(message, notificationType, title, 0);
-    logDevelopment(`Game over notification: ${title} - ${message} (Type: ${notificationType})`);
   }
 }
 
@@ -186,7 +182,7 @@ export function loadPgn(pgnString) {
   if (!chess) {
     // Attempt to initialize if not already done
     if (!initializeGame()) {
-      logDevelopment('Error: Cannot load PGN, game initialization failed.', 'error');
+      console.error('Error: Cannot load PGN, game initialization failed.');
       return false;
     }
   }
@@ -198,10 +194,9 @@ export function loadPgn(pgnString) {
     moveHistory = chess.history({ verbose: true }) || [];
     currentMoveIndex = -1;
 
-    logDevelopment(`PGN loaded successfully. Initial FEN: ${initialFen}. History length: ${moveHistory.length}. Current index: ${currentMoveIndex}. Main chess instance now holds the full game, reset to start`);
     return true;
   } catch (error) {
-    logDevelopment(`Error loading PGN: ${error}`, 'error');
+    console.error(`Error loading PGN: ${error}`);
     initializeGame();
     return false;
   }
@@ -213,7 +208,7 @@ export function loadPgn(pgnString) {
  */
 export function getPgnHeaders() {
   if (!chess) {
-    logDevelopment('Error: Game not initialized.', 'error');
+    console.error('Error: Game not initialized.');
     return {};
   }
   return chess.getHeaders() || {}; // chess.js header() returns the headers object
@@ -226,7 +221,7 @@ export function getPgnHeaders() {
  */
 export function getGameHistory() {
   if (!chess) {
-    logDevelopment('Error: Game not initialized.', 'error');
+    console.error('Error: Game not initialized.');
     return [];
   }
   // Get history with verbose objects to potentially use more info later
@@ -234,6 +229,17 @@ export function getGameHistory() {
   return moveHistory;
 }
 
+/**
+ * Gets the comments associated with the loaded PGN.
+ * @returns {object[]} An array of comment objects from chess.js, each containing 'fen' and 'comment'. Returns empty array if game not loaded or no comments.
+ */
+export function getGameComments() {
+  if (!chess) {
+    console.error('Error: Game not initialized, cannot get comments.');
+    return [];
+  }
+  return chess.getComments() || [];
+}
 
 /**
  * Resets the game state to a specific move index in the history.
@@ -261,7 +267,6 @@ export function goToMoveIndex(index) {
  * @returns {string|null} The FEN of the starting position or null on error.
  */
 export function goToStart() {
-  logDevelopment('Navigating to start.');
   return goToMoveIndex(-1);
 }
 
@@ -271,10 +276,8 @@ export function goToStart() {
  */
 export function goToPreviousMove() {
   if (currentMoveIndex < 0) {
-    logDevelopment('Already at the start.');
     return null; // Cannot go back further
   }
-  logDevelopment(`Navigating to previous move (index ${currentMoveIndex - 1}).`);
   return goToMoveIndex(currentMoveIndex - 1);
 }
 
@@ -284,10 +287,8 @@ export function goToPreviousMove() {
  */
 export function goToNextMove() {
   if (currentMoveIndex >= moveHistory.length - 1) {
-    logDevelopment('Already at the end.');
     return null; // Cannot go forward further
   }
-  logDevelopment(`Navigating to next move (index ${currentMoveIndex + 1}).`);
   return goToMoveIndex(currentMoveIndex + 1);
 }
 
@@ -296,7 +297,6 @@ export function goToNextMove() {
  * @returns {string|null} The FEN of the final position or null on error.
  */
 export function goToEnd() {
-  logDevelopment('Navigating to end.');
   return goToMoveIndex(moveHistory.length - 1);
 }
 
@@ -314,19 +314,17 @@ export function getCurrentMoveIndex() {
  * @returns {boolean} True if reset was successful, false otherwise.
  */
 export function resetGameView() {
-  logDevelopment('Resetting game view to initial state.');
   try {
     // Re-initialize with the default starting position
     initializeGame(); // This already handles setting chess, initialFen, history, index
     if (chess) {
-      logDevelopment('Game view reset successfully.');
       return true;
     } else {
-      logDevelopment('Failed to reset game view (chess object is null after re-initialization).', 'error');
+      console.error('Failed to reset game view (chess object is null after re-initialization).');
       return false;
     }
   } catch (error) {
-    logDevelopment(`Error during game view reset: ${error}`, 'error');
+    console.error(`Error during game view reset: ${error}`);
     return false;
   }
 }
