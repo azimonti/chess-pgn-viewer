@@ -1,18 +1,7 @@
 'use strict';
 
-import {
-  getActiveFile,
-  getLocalLastModified,
-  getContentFromStorage,
-  saveContentToStorage,
-  setLastSyncTime
-} from './storage/storage.js';
-import {
-  getDbxInstance,
-  getDropboxFileMetadata,
-  downloadFileFromDropbox,
-  uploadFileToDropbox
-} from './dropbox/api.js';
+import { getActiveFile, getLocalLastModified, getContentFromStorage, saveContentToStorage, setLastSyncTime } from './storage/storage.js';
+import { getDbxInstance, getDropboxFileMetadata, downloadFileFromDropbox, uploadFileToDropbox } from './dropbox/api.js';
 import { updateSyncIndicator, showConflictModal, SyncStatus } from './dropbox/ui.js';
 import { clearUploadPending, isUploadPending, setUploadPending } from './dropbox/offline.js';
 import { logVerbose } from './logging.js';

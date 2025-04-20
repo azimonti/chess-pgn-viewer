@@ -1,9 +1,9 @@
 'use strict';
+
 import { logVerbose } from '../logging.js';
 import { updateSyncIndicator, SyncStatus } from './ui.js';
-import { getAccessToken } from './auth.js'; // To check if logged in
-import { getActiveFile } from '../storage/storage.js'; // To check active file status
-// Import coordinator for sync trigger
+import { getAccessToken } from './auth.js';
+import { getActiveFile } from '../storage/storage.js';
 
 // Helper to generate dynamic keys for pending status
 function getDynamicPendingKey(filePath) {

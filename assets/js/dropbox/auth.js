@@ -1,13 +1,11 @@
-/* global Dropbox */ // Inform linter about globals
 'use strict';
+
 import { CLIENT_ID, REDIRECT_URI, ACCESS_TOKEN_KEY } from './config.js';
 import { logVerbose } from '../logging.js';
 import { updateAuthButton, updateSyncIndicator, SyncStatus } from './ui.js';
-// Imports for file discovery
 import { getKnownFiles, addKnownFile } from '../storage/storage.js';
 import { initializeDropboxApi, getDbxInstance } from './api.js';
 import { updateFileSelectionUI } from '../storage/files.js';
-
 
 let dbxAuth = null;
 let accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);

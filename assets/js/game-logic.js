@@ -1,4 +1,5 @@
 'use strict';
+
 import { Chess } from './lib/chess-1.2.0.min.js';
 import { getIsBoardFlipped } from './board-ui.js';
 

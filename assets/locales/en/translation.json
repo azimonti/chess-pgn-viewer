@@ -28,7 +28,6 @@
       "cyclePieces": "Cycle Piece Set",
       "loadPgn": "Load PGN from Text Area",
       "reset": "Reset",
-      "savePgn": "Save PGN to File",
       "start": "Go to Start",
       "previous": "Previous Move",
       "next": "Next Move",
@@ -41,7 +40,8 @@
       "event": "Evento:",
       "date": "Data:"
     },
-    "noGameLoaded": "No game loaded."
+    "noGameLoaded": "No game loaded.",
+    "textAreaLoading": "Loaded from Text Area"
   },
   "modal": {
     "conflict": {

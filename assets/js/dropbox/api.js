@@ -1,5 +1,5 @@
-/* global Dropbox */
 'use strict';
+
 import { logVerbose } from '../logging.js';
 
 let dbx = null; // Dropbox API instance

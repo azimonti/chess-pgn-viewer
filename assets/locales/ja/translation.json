@@ -28,7 +28,6 @@
       "cyclePieces": "駒セットを切り替え",
       "loadPgn": "テキストエリアからPGNを読み込む",
       "reset": "リセット",
-      "savePgn": "PGNをファイルに保存",
       "start": "開始位置へ",
       "previous": "前の手へ",
       "next": "次の手へ",
@@ -41,7 +40,8 @@
       "event": "イベント:",
       "date": "日付:"
     },
-    "noGameLoaded": "ゲームはロードされていません。"
+    "noGameLoaded": "ゲームはロードされていません。",
+    "textAreaLoading": "テキストエリアから読み込みました"
   },
   "modal": {
     "conflict": {

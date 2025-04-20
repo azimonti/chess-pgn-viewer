@@ -1,4 +1,4 @@
-/* global i18next, i18nextBrowserLanguageDetector, i18nextHttpBackend */
+/* global i18nextBrowserLanguageDetector, i18nextHttpBackend */
 'use strict';
 
 import { logVerbose } from './logging.js';

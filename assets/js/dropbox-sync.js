@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 import { initializeAuthentication } from './dropbox/auth.js';
 import { initializeOfflineHandling } from './dropbox/offline.js';

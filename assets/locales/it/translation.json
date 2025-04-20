@@ -28,7 +28,6 @@
       "cyclePieces": "Cambia Set Pezzi",
       "loadPgn": "Carica PGN dall'Area di Testo",
       "reset": "Reimposta",
-      "savePgn": "Salva PGN su File",
       "start": "Vai all'Inizio",
       "previous": "Mossa Precedente",
       "next": "Mossa Successiva",
@@ -41,7 +40,8 @@
       "event": "Evento:",
       "date": "Data:"
     },
-    "noGameLoaded": "Nessun gioco caricato."
+    "noGameLoaded": "Nessun gioco caricato.",
+    "textAreaLoading": "Caricato dall'area di testo"
   },
   "modal": {
     "conflict": {

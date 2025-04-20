@@ -106,39 +106,37 @@
             </div>
           </div>
           <div id="pgn-controls-container" class="col-lg-5 col-xl-6 col-12">
-            <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center flex-wrap mb-3">
-              <div class="mx-auto me-md-auto ms-md-0 text-center text-md-start">
-                <button class="btn btn-light me-1" id="btn-start" title="Go to Start" data-i18n="[title]pgnViewer.button.start">
-                  <i class="fa-solid fa-angles-left"></i>
-                </button>
-                <button class="btn btn-light me-1" id="btn-prev" title="Previous Move" data-i18n="[title]pgnViewer.button.previous">
-                  <i class="fa-solid fa-angle-left"></i>
-                </button>
-                <button class="btn btn-light me-1" id="btn-next" title="Next Move" data-i18n="[title]pgnViewer.button.next">
-                  <i class="fa-solid fa-angle-right"></i>
-                </button>
-                <button class="btn btn-light" id="btn-end" title="Go to End" data-i18n="[title]pgnViewer.button.end">
-                  <i class="fa-solid fa-angles-right"></i>
-                </button>
-              </div>
-              <div class="mt-2 mt-md-0 mx-auto ms-md-auto me-md-0 text-center text-md-start">
-                <button class="btn btn-light me-1 d-inline-block d-md-inline" id="btn-flip-board" title="Flip Board" data-i18n="[title]pgnViewer.button.flip">
-                  <i class="fa-solid fa-rotate"></i>
-                </button>
-                <button class="btn btn-light me-1 d-inline-block d-md-inline" id="btn-reset" title="Reset" data-i18n="[title]pgnViewer.button.reset">
-                  <i class="fa-solid fa-chess-board"></i>
-                </button>
-                <button class="btn btn-light me-1 d-inline-block d-md-inline" id="btn-cycle-pieces" title="Cycle Piece Set" data-i18n="[title]pgnViewer.button.cyclePieces">
-                  <i class="fa-solid fa-chess"></i>
-                </button>
-                <button class="btn btn-light me-1 d-inline-block d-md-inline" id="btn-load-pgn" title="Load PGN from Text Area" data-i18n="[title]pgnViewer.button.loadPgn">
-                  <i class="fa-solid fa-upload"></i>
-                </button>
-                <button class="btn btn-light d-inline-block d-md-inline" id="btn-save-pgn" title="Save PGN to File" data-i18n="[title]pgnViewer.button.savePgn">
-                  <i class="fa-solid fa-floppy-disk"></i>
-                </button>
-              </div>
+          <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center flex-wrap mb-3">
+            <div class="mx-auto text-center button-group-wrapper"> <!-- Restored mx-auto, removed flex -->
+              <button class="btn btn-light me-1 pgn-control-btn" id="btn-start" title="Go to Start" data-i18n="[title]pgnViewer.button.start">
+                <i class="fa-solid fa-angles-left"></i>
+              </button>
+              <button class="btn btn-light me-1 pgn-control-btn" id="btn-prev" title="Previous Move" data-i18n="[title]pgnViewer.button.previous">
+                <i class="fa-solid fa-angle-left"></i>
+              </button>
+              <button class="btn btn-light me-1 pgn-control-btn" id="btn-next" title="Next Move" data-i18n="[title]pgnViewer.button.next">
+                <i class="fa-solid fa-angle-right"></i>
+              </button>
+              <button class="btn btn-light pgn-control-btn" id="btn-end" title="Go to End" data-i18n="[title]pgnViewer.button.end">
+                <i class="fa-solid fa-angles-right"></i>
+              </button>
             </div>
+            <div class="mt-2 mt-md-0 mx-auto text-center button-group-wrapper"> <!-- Restored mx-auto, removed flex -->
+              <button class="btn btn-light me-1 d-inline-block d-md-inline pgn-control-btn" id="btn-flip-board" title="Flip Board" data-i18n="[title]pgnViewer.button.flip">
+                <i class="fa-solid fa-rotate"></i>
+              </button>
+              <button class="btn btn-light me-1 d-inline-block d-md-inline pgn-control-btn" id="btn-reset" title="Reset" data-i18n="[title]pgnViewer.button.reset">
+                <i class="fa-solid fa-chess-board"></i>
+              </button>
+              <button class="btn btn-light me-1 d-inline-block d-md-inline pgn-control-btn" id="btn-cycle-pieces" title="Cycle Piece Set" data-i18n="[title]pgnViewer.button.cyclePieces">
+                <i class="fa-solid fa-chess"></i>
+              </button>
+              <button class="btn btn-light d-inline-block d-md-inline pgn-control-btn" id="btn-load-pgn" title="Load PGN from Text Area" data-i18n="[title]pgnViewer.button.loadPgn"> <!-- Removed final me-1 -->
+                <i class="fa-solid fa-upload"></i>
+              </button>
+              <!-- Note: Restored margins, added pgn-control-btn class -->
+            </div>
+          </div>
             <div id="pgn-info-display" class="mb-3">
               <div id="pgn-headers" class="mb-2 small">
                 <!-- Headers will be populated by JS -->

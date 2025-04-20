@@ -2,11 +2,13 @@
 
 import { renderBoard, flipBoard, cyclePieceSet } from './board-ui.js';
 import {
-  initializeGame, getCurrentFen, loadPgn, getPgnHeaders, getGameHistory, getGameComments, // Added getGameComments
+  initializeGame, getCurrentFen, loadPgn, getPgnHeaders, getGameHistory, getGameComments,
   goToStart, goToPreviousMove, goToNextMove, goToEnd, getCurrentMoveIndex,
   goToMoveIndex,
   resetGameView
 } from './game-logic.js';
+import { updatePgnFileDetailsUI } from './file-management-ui.js';
+import { getActiveFile, getKnownFiles, getContentFromStorage } from './storage/storage.js';
 
 // --- DOM Element Selectors ---
 const flipBoardButton = $('#btn-flip-board');
@@ -15,7 +17,6 @@ const loadPgnButton = $('#btn-load-pgn');
 const pgnInputArea = $('#pgn-input');
 const chessboardContainer = $('#chessboard');
 const resetButton = $('#btn-reset');
-const savePgnButton = $('#btn-save-pgn');
 const startButton = $('#btn-start');
 const prevButton = $('#btn-prev');
 const nextButton = $('#btn-next');
@@ -36,7 +37,7 @@ const FIXPGN = false;
  * Updates the PGN header display elements.
  * @param {object} headers - The headers object from chess.js (e.g., { White: '...', Black: '...' }).
  */
-function displayPgnHeaders(headers) {
+export function displayPgnHeaders(headers) { // Added export
   pgnHeaderWhite.text(headers.White || 'N/A');
   pgnHeaderBlack.text(headers.Black || 'N/A');
   pgnHeaderResult.text(headers.Result || 'N/A');
@@ -66,7 +67,7 @@ function simplifyFenForKey(fen) {
  * Updates the PGN moves paragraph display, including comments and highlighting capabilities.
  * @param {object[]} history - The verbose move history array from chess.js.
  */
-function displayPgnMoves(history) {
+export function displayPgnMoves(history) { // Added export
   pgnMovesParagraph.empty(); // Clear previous moves
   const comments = getGameComments(); // Get comments array [{fen: ..., comment: ...}, ...]
   // Create map using simplified FENs as keys for more robust matching
@@ -175,7 +176,7 @@ function highlightCurrentMove() {
  * Updates the board display and highlights the current move.
  * @param {string|null} fen - The FEN string to render. If null, indicates an error or no change.
  */
-function updateBoardAndHighlight(fen) {
+export function updateBoardAndHighlight(fen) { // Added export
   if (fen && chessboardContainer.length) {
     renderBoard(chessboardContainer[0], fen);
     highlightCurrentMove();
@@ -189,17 +190,6 @@ function clearPgnDisplay() {
   displayPgnHeaders({});
   displayPgnMoves([]);
   pgnInputArea.val('');
-}
-
-/**
- * Placeholder function for saving PGN to the current file.
- */
-function savePgnToFile() {
-  // Assuming showNotification is globally available or imported elsewhere if needed
-  if (window.showNotification) {
-    showNotification("Save PGN functionality is not yet implemented.", 'info');
-  }
-  // TODO: Implement logic
 }
 
 // --- Event Listener Setup ---
@@ -233,7 +223,7 @@ export function initializePgnDisplayListeners() {
     const pgnExample = [
       '[Event "Casual Game"]',
       '[Site "Berlin GER"]',
-      '[Date "1852 stardom"]', // Corrected typo
+      '[Date "1852 stardom"]',
       '[EventDate "?"]',
       '[Round "?"]',
       '[Result "1-0"]',
@@ -268,6 +258,10 @@ export function initializePgnDisplayListeners() {
         displayPgnHeaders(headers);
         displayPgnMoves(history);
         updateBoardAndHighlight(getCurrentFen()); // Render initial board and highlight
+
+        // Update file details UI based on the content just loaded from the textarea
+        // Use a generic name like "Loaded from Text Area" or keep it null? Let's use a generic name.
+        updatePgnFileDetailsUI(i18next.t('pgnViewer.textAreaLoading', 'Loaded from Text Area'), pgnToLoad);
 
         if (window.showNotification && window.i18next) {
           showNotification(i18next.t('notification.pgnLoadSuccess', 'PGN loaded successfully.'), 'success', i18next.t('notification.titleSuccess', 'Success'));
@@ -304,10 +298,6 @@ export function initializePgnDisplayListeners() {
     }
   });
 
-  savePgnButton.click(function() {
-    savePgnToFile();
-  });
-
   // --- Navigation Button Listeners ---
   startButton.click(function() {
     const newFen = goToStart();
@@ -337,21 +327,6 @@ export function initializePgnDisplayListeners() {
       updateBoardAndHighlight(newFen);
     }
   });
+  //  clearPgnDisplay(); // This clears headers and calls displayPgnMoves([])
 
-  // Initial render on load
-  if (chessboardContainer.length) {
-    updateBoardAndHighlight(getCurrentFen()); // Use the helper to render and highlight
-    // Also display initial headers and moves if a game is loaded by default
-    const initialHeaders = getPgnHeaders();
-    const initialHistory = getGameHistory();
-    if (initialHistory.length > 0 || Object.keys(initialHeaders).length > 0) {
-      displayPgnHeaders(initialHeaders);
-      displayPgnMoves(initialHistory); // This will now call the updated function
-    } else {
-      // Ensure display is cleared if no game is loaded initially
-      clearPgnDisplay(); // This clears headers and calls displayPgnMoves([])
-    }
-  } else {
-    console.error("Error: Chessboard container element not found!"); // Replaced logDevelopment with console.error
-  }
 }

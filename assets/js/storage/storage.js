@@ -5,7 +5,7 @@ import { logVerbose } from '../logging.js';
 // --- Constants ---
 const KNOWN_FILES_KEY = 'knownFiles'; // Stores array of { name: string, path: string }
 const ACTIVE_FILE_KEY = 'activeFile'; // Stores the path (string) of the active file
-export const DEFAULT_FILE_PATH = '/default.txt'; // Default file if none active or found
+export const DEFAULT_FILE_PATH = '/default.pgn'; // Default file if none active or found
 
 // Storage key prefixes
 const CONTENT_KEY_PREFIX = 'content_';

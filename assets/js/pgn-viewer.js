@@ -4,14 +4,13 @@
 /* showNotification(i18next.t('notification.disappearingAlert', 'Disappearing alert notification'), 'alert', i18next.t('notification.disappearingAlertTitle', 'Alert')); */
 'use strict';
 
-// Core/Utility Imports
 import { initializeDropboxSync } from './dropbox-sync.js';
 import { renderBoard } from './board-ui.js';
 import { initializeGame, getCurrentFen } from './game-logic.js';
-
-// Feature Module Imports
+import { setActiveFile } from './storage/storage.js';
 import { initializePgnDisplayListeners } from './pgn-display.js';
 import { initializeFileManagementListeners } from './file-management-ui.js';
+import { updateFileSelectionUI, loadActiveFileContentAndUpdateUI } from './storage/files.js';
 
 // --- DOM Element Selectors (Minimal) ---
 const chessboardContainer = $('#chessboard'); // Keep for initial render
@@ -29,12 +28,16 @@ $(document).ready(function () {
       console.warn("Error: Chessboard container element not found!", 'error');
     }
   } else {
-    console.warn("Error: Failed to initialize game logic!", 'error');
-    // Optionally display an error to the user
+    console.error("Error: Failed to initialize game logic!", 'error');
   }
 
   // --- Initialize Feature Modules ---
   initializePgnDisplayListeners(); // Setup listeners for PGN display, controls, navigation
   initializeFileManagementListeners(); // Setup listeners for file add/rename/delete buttons and modals
+
+  // --- Initial File UI Population and Content Load ---
+  updateFileSelectionUI(); // Populate the file list sidebar
+  setActiveFile('/9ed81f9981394.pgn'); // reset the active file to random string
+ // loadActiveFileContentAndUpdateUI(); // Load content of the initially active file
 
 });

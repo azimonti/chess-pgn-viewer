@@ -1,7 +1,7 @@
 'use strict';
+
 import { logVerbose } from '../logging.js';
-// Import function to get last sync time and active file
-import { getLastSyncTime, getActiveFile } from '../storage/storage.js'; // Added imports
+import { getLastSyncTime, getActiveFile } from '../storage/storage.js';
 
 // --- Sync Status Indicator ---
 export const SyncStatus = {
