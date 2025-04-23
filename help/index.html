@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="app-version" content="2.0.3">
+  <meta name="app-version" content="1.0.0">
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport'>
   <link rel="icon" href="/img/icons/chess-pgn-viewer.ico" type="image/x-icon">
   <link rel="icon" type="image/png" sizes="32x32" href="/img/icons/chess-pgn-viewer-32x32.png">
@@ -11,7 +11,7 @@
   <meta http-equiv="content-language" content="en-us">
   <title data-i18n="helpPage.title">Chess PGN Viewer - Help</title>
   <link rel="manifest" href="/data/json/manifest.json">
-  <link rel="canonical" href="https://www.YOURURL.com/">
+  <!--link rel="canonical" href="https://www.YOURURL.com/"-->
   <link rel="stylesheet" href="/assets/css/lib/bootstrap-5.3.2.min.css">
   <link rel="stylesheet" href="/assets/css/notif.min.css">
   <link rel="stylesheet" href="/assets/css/pgn-viewer.css">
@@ -23,37 +23,41 @@
       <h1 class="h2" data-i18n="helpPage.header">Help</h1>
       <div class="d-flex align-items-center">
         <div class="dropdown me-2">
-          <button class="btn btn-light p-1 btn-fa dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Language" style="line-height: 1;">
-            <i class="fa-solid fa-language fs-6 align-middle" style="color: #0083B3;"></i> <span id="currentLangDisplay">EN</span>
-          </button>
+          <button class="btn btn-light p-1 btn-fa dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Language" style="line-height: 1;"><i class="fa-solid fa-language fs-6 align-middle" style="color: #0083B3;"></i> <span id="currentLangDisplay">EN</span></button>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
-            <li><h6 class="dropdown-header" data-i18n="languageSwitcher.header">Language</h6></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item lang-select" href="#" data-lang="en">EN</a></li>
-            <li><a class="dropdown-item lang-select" href="#" data-lang="it">IT</a></li>
-            <li><a class="dropdown-item lang-select" href="#" data-lang="ja">日本語</a></li>
+            <li>
+              <h6 class="dropdown-header" data-i18n="languageSwitcher.header">Language</h6>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item lang-select" href="#" data-lang="en">EN</a>
+            </li>
+            <li>
+              <a class="dropdown-item lang-select" href="#" data-lang="it">IT</a>
+            </li>
+            <li>
+              <a class="dropdown-item lang-select" href="#" data-lang="ja">日本語</a>
+            </li>
           </ul>
-        </div>
-        <a href="/" class="btn btn-light p-1 btn-fa" title="Back to App" data-i18n="[title]helpPage.button.backToApp" style="line-height: 1;"><i class="fa-solid fa-reply fs-6 align-middle" style="color: #0083B3;"></i></a>
+        </div><a href="/apps/sandbox/pgn-viewer/" class="btn btn-light p-1 btn-fa" title="Back to App" data-i18n="[title]helpPage.button.backToApp" style="line-height: 1;"><i class="fa-solid fa-reply fs-6 align-middle" style="color: #0083B3;"></i></a>
       </div>
     </div>
     <div id="help-content">
       <h2 data-i18n="helpPage.content.title">Chess PGN Viewer Help</h2>
       <p data-i18n="helpPage.content.intro">This document explains how to use the Chess PGN Viewer Webapp.</p>
-
       <h3 data-i18n="helpPage.content.loading.title">Loading a PGN File</h3>
       <ol>
         <li data-i18n="helpPage.content.loading.step1">Click the "Load PGN" button (usually represented by a folder icon or similar).</li>
         <li data-i18n="helpPage.content.loading.step2">Select a <code>.pgn</code> file from your local device using the file browser that appears.</li>
         <li data-i18n="helpPage.content.loading.step3">The application will load the first game found in the PGN file. If the PGN contains multiple games, typically only the first one is displayed initially (behavior might vary based on implementation).</li>
       </ol>
-
       <h3 data-i18n="helpPage.content.viewing.title">Viewing Game Information</h3>
       <ul>
         <li data-i18n="helpPage.content.viewing.metadata"><strong>Metadata:</strong> Once a game is loaded, details like Player Names (White and Black), Event, Site, Date, Round, and Result are displayed above or alongside the chessboard.</li>
         <li data-i18n="helpPage.content.viewing.moves"><strong>Moves List:</strong> The game's moves are listed in Standard Algebraic Notation (SAN) in a scrollable area. The current move being displayed on the board is usually highlighted.</li>
       </ul>
-
       <h3 data-i18n="helpPage.content.navigating.title">Navigating the Game</h3>
       <p data-i18n="helpPage.content.navigating.intro">Use the control buttons below the board or moves list:</p>
       <ul>
@@ -63,17 +67,14 @@
         <li data-i18n="helpPage.content.navigating.last"><strong>Last Move:</strong> Go to the final position of the game.</li>
         <li data-i18n="helpPage.content.navigating.click"><strong>Clicking Moves:</strong> You can often click directly on a move in the moves list to jump to that specific position in the game.</li>
       </ul>
-
       <h3 data-i18n="helpPage.content.board.title">Understanding the Board</h3>
       <ul>
         <li data-i18n="helpPage.content.board.visual">The chessboard visually represents the position corresponding to the currently selected move.</li>
         <li data-i18n="helpPage.content.board.pieces">Pieces are displayed according to standard chess representation.</li>
         <li data-i18n="helpPage.content.board.orientation">The board orientation (White at the bottom or Black at the bottom) might be configurable via settings (if implemented).</li>
       </ul>
-
       <h3 data-i18n="helpPage.content.offline.title">Offline Use</h3>
       <p data-i18n="helpPage.content.offline.desc">This application is a Progressive Web App (PWA) and utilizes a Service Worker. After loading the app once while online, it should be available for offline use, allowing you to view previously loaded or cached PGN data (specific offline capabilities depend on the implementation).</p>
-
       <h3 data-i18n="helpPage.content.troubleshooting.title">Troubleshooting</h3>
       <ul>
         <li data-i18n="helpPage.content.troubleshooting.invalid"><strong>Invalid PGN:</strong> If the selected file is not a valid PGN or is corrupted, the application might show an error or fail to load the game. Ensure your PGN file adheres to the standard format.</li>

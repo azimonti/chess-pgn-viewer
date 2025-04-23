@@ -1,14 +1,9 @@
 'use strict';
 
 import { renderBoard, flipBoard, cyclePieceSet } from './board-ui.js';
-import {
-  initializeGame, getCurrentFen, loadPgn, getPgnHeaders, getGameHistory, getGameComments,
-  goToStart, goToPreviousMove, goToNextMove, goToEnd, getCurrentMoveIndex,
-  goToMoveIndex,
-  resetGameView
-} from './game-logic.js';
+import { initializeGame, getCurrentFen, loadPgn, getPgnHeaders, getGameHistory, getGameComments, goToStart, goToPreviousMove, goToNextMove, goToEnd, getCurrentMoveIndex, goToMoveIndex, resetGameView } from './game-logic.js';
 import { updatePgnFileDetailsUI } from './file-management-ui.js';
-import { getActiveFile, getKnownFiles, getContentFromStorage } from './storage/storage.js';
+import { setActiveFile } from './storage/storage.js';
 
 // --- DOM Element Selectors ---
 const flipBoardButton = $('#btn-flip-board');
@@ -26,7 +21,7 @@ const pgnHeaderBlack = $('#pgn-header-black');
 const pgnHeaderResult = $('#pgn-header-result');
 const pgnHeaderEvent = $('#pgn-header-event');
 const pgnHeaderDate = $('#pgn-header-date');
-const pgnMovesParagraph = $('#pgn-moves-paragraph'); // Changed ID
+const pgnMovesParagraph = $('#pgn-moves-paragraph');
 
 // fix PGN for development
 const FIXPGN = false;
@@ -259,9 +254,8 @@ export function initializePgnDisplayListeners() {
         displayPgnMoves(history);
         updateBoardAndHighlight(getCurrentFen()); // Render initial board and highlight
 
-        // Update file details UI based on the content just loaded from the textarea
-        // Use a generic name like "Loaded from Text Area" or keep it null? Let's use a generic name.
-        updatePgnFileDetailsUI(i18next.t('pgnViewer.textAreaLoading', 'Loaded from Text Area'), pgnToLoad);
+        // remove the file contents as the pgn is loaded from the textarea
+        updatePgnFileDetailsUI(null, null, true);
 
         if (window.showNotification && window.i18next) {
           showNotification(i18next.t('notification.pgnLoadSuccess', 'PGN loaded successfully.'), 'success', i18next.t('notification.titleSuccess', 'Success'));
@@ -288,6 +282,8 @@ export function initializePgnDisplayListeners() {
     if (resetGameView()) {
       clearPgnDisplay();
       updateBoardAndHighlight(getCurrentFen());
+      setActiveFile('/9ed81f9981394.pgn'); // reset the active file to random string
+      updatePgnFileDetailsUI(null, null, true); // remove games contents if loaded
       if (window.showNotification && window.i18next) {
         showNotification(i18next.t('notification.gameResetSuccess', 'Game reset to starting position.'), 'success', i18next.t('notification.titleSuccess', 'Success'));
       }

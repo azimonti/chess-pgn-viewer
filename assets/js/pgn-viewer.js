@@ -7,7 +7,6 @@
 import { initializeDropboxSync } from './dropbox-sync.js';
 import { renderBoard } from './board-ui.js';
 import { initializeGame, getCurrentFen } from './game-logic.js';
-import { setActiveFile } from './storage/storage.js';
 import { initializePgnDisplayListeners } from './pgn-display.js';
 import { initializeFileManagementListeners } from './file-management-ui.js';
 import { updateFileSelectionUI, loadActiveFileContentAndUpdateUI } from './storage/files.js';
@@ -37,7 +36,6 @@ $(document).ready(function () {
 
   // --- Initial File UI Population and Content Load ---
   updateFileSelectionUI(); // Populate the file list sidebar
-  setActiveFile('/9ed81f9981394.pgn'); // reset the active file to random string
- // loadActiveFileContentAndUpdateUI(); // Load content of the initially active file
+  loadActiveFileContentAndUpdateUI(); // Load content of the initially active file
 
 });

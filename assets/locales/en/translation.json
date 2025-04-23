@@ -35,10 +35,10 @@
     },
     "header": {
       "white": "White:",
-      "black": "Nero:",
-      "result": "Risultato:",
-      "event": "Evento:",
-      "date": "Data:"
+      "black": "Black:",
+      "result": "Result:",
+      "event": "Event:",
+      "date": "Date:"
     },
     "noGameLoaded": "No game loaded.",
     "textAreaLoading": "Loaded from Text Area"

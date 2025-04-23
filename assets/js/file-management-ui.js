@@ -208,7 +208,7 @@ export function initializeFileManagementListeners() {
       }
 
       // 3. Update the file details UI (filename and game list)
-      updatePgnFileDetailsUI(fileName, pgnContent);
+      updatePgnFileDetailsUI(fileName, pgnContent, false);
 
       // 4. Save the imported file to storage if it doesn't exist
       const knownFiles = getKnownFiles();
@@ -273,36 +273,92 @@ export function initializeFileManagementListeners() {
  *
  * @param {string} fileName The name of the loaded file.
  * @param {string} pgnContent The PGN content of the file.
+ * @param {boolean} remove If true, remove the game list accordion item.
  */
-export function updatePgnFileDetailsUI(fileName, pgnContent) {
-  let detailsContainer = $('#pgn-file-details');
+export function updatePgnFileDetailsUI(fileName, pgnContent, remove) {
+  const parentAccordionId = 'pgnDetailsAccordionGroup'; // ID of the shared parent accordion
+  const gameListPlaceholderId = 'game-list-accordion-placeholder'; // ID of the placeholder div - used only for removal
+  const gameListItemId = 'pgnGameListAccordionItem'; // Static ID for the game list item itself
 
-  // Create container if it doesn't exist
-  if (detailsContainer.length === 0) {
-    detailsContainer = $('<div id="pgn-file-details" class="mt-3"></div>');
-    pgnInputElement.after(detailsContainer); // Insert after the pgn-input textarea
-  }
+  const parentAccordion = $(`#${parentAccordionId}`);
+  let gameListItem = $(`#${gameListItemId}`); // Try to find existing item
 
-  // Clear previous content
-  detailsContainer.empty();
-
-  if (!fileName || !pgnContent) {
-    // If no file/content, hide or clear the container
-    detailsContainer.hide();
+  // Remove the existing game list item if requested or if no file/content
+  if (remove || !fileName || !pgnContent) {
+    if (gameListItem.length) {
+      gameListItem.remove();
+    }
+    // If removing, also clear the PGN input (optional, but consistent)
+    if (remove) {
+      pgnInputElement.val('');
+    }
+    // Show the textarea for input a single PGN
+    bootstrap.Collapse.getOrCreateInstance(document.getElementById('collapsePgnInput')).show();
+    $('button[data-bs-target="#collapsePgnInput"]').removeClass('collapsed').attr('aria-expanded', 'true');
     return;
   }
 
-  detailsContainer.show();
+  // If parent accordion doesn't exist, we cannot proceed.
+  if (!parentAccordion.length) {
+    console.error(`Parent accordion group #${parentAccordionId} not found. Cannot add game list item.`);
+    return;
+  }
 
-  // Display filename
-  detailsContainer.append(`<h6><span id="loaded-file-name" data-i18n="pgnViewer.textAreaLoading">${fileName}</span></h6>`);
+  // --- Create or Update Accordion Item ---
+  const collapseId = `collapse-pgn-game-list`; // Use a static ID for the collapse element
+  const headerId = `header-pgn-game-list`;   // Use a static ID for the header
 
-  // Parse PGN and display games
+  // If the item doesn't exist, create it and add it to the parent
+  if (gameListItem.length === 0) {
+    // Hide the textarea for input a single PGN
+    $('button[data-bs-target="#collapsePgnInput"]').addClass('collapsed').attr('aria-expanded', 'false');
+    $('#collapsePgnInput').addClass('collapsed').removeClass('show');
+    const placeholder = $(`#${gameListPlaceholderId}`); // Get placeholder reference
+    // Create the new item as a jQuery object
+    const newItem = $(`
+        <div class="accordion-item" id="${gameListItemId}">
+          <h2 class="accordion-header" id="${headerId}">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" aria-expanded="true" aria-controls="${collapseId}">
+              <span class="loaded-file-name"></span>
+              <i class="fa-solid fa-angle-down accordion-icon"></i>
+            </button>
+          </h2>
+          <div id="${collapseId}" class="accordion-collapse collapse show" aria-labelledby="${headerId}" data-bs-parent="#${parentAccordionId}">
+            <div class="accordion-body p-0">
+              <!-- Game list will be appended here -->
+            </div>
+          </div>
+        </div>
+      `);
+    // If placeholder exists, replace it with the new item.
+    // Otherwise, append the new item to the parent accordion.
+    if (placeholder.length) {
+      placeholder.replaceWith(newItem);
+    } else {
+      parentAccordion.append(newItem);
+    }
+    // Get a fresh reference to the item now that it's in the DOM
+    gameListItem = $(`#${gameListItemId}`);
+  }else{
+    // Show the textarea for input a single PGN
+    bootstrap.Collapse.getOrCreateInstance(document.getElementById('collapsePgnInput')).show();
+    $('button[data-bs-target="#collapsePgnInput"]').removeClass('collapsed').attr('aria-expanded', 'true');
+  }
+
+  // Update filename in the header (applies whether item was created or found)
+  gameListItem.find('.loaded-file-name').text(fileName);
+
+  // Ensure the collapse element points to the correct parent
+  gameListItem.find(`#${collapseId}`).attr('data-bs-parent', `#${parentAccordionId}`);
+
+  // --- Parse PGN and Populate Game List ---
   const games = parsePgn(pgnContent);
+  const accordionBody = gameListItem.find('.accordion-body');
+  accordionBody.empty(); // Clear previous game list
 
   if (games.length > 0) {
-    const gameList = $('<ul id="pgn-game-list" class="list-group mt-2"></ul>');
-    detailsContainer.append(gameList);
+    const gameList = $('<ul id="pgn-game-list" class="list-group list-group-flush"></ul>'); // Use flush for no borders
+    accordionBody.append(gameList);
 
     games.forEach(game => {
       const listItem = $('<li></li>')
@@ -355,6 +411,14 @@ export function updatePgnFileDetailsUI(fileName, pgnContent) {
       gameList.append(listItem);
     });
   } else {
-    detailsContainer.append('<p class="text-muted mt-2">No games found in this PGN.</p>');
+    // Append message inside the accordion body if no games
+    accordionBody.append('<p class="text-muted p-2 mb-0" data-i18n="pgnViewer.noGamesFound">No games found in this PGN.</p>');
   }
+
+  // Clear the main PGN input textarea *only* if we successfully loaded games
+  // (Avoid clearing if the PGN was invalid or empty)
+  if (games.length > 0) {
+    pgnInputElement.val('');
+  }
+
 }

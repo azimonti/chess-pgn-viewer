@@ -236,7 +236,7 @@ export async function loadActiveFileContentAndUpdateUI() {
   try {
     const content = await getContentFromStorage(); // Assumes this gets content for the active file
     if (content !== null) {
-      updatePgnFileDetailsUI(activeFileName, content); // Update the game list below text area
+      updatePgnFileDetailsUI(activeFileName, content, false); // Update the game list below text area
       logVerbose(`Successfully loaded content for ${activeFileName} and updated UI.`);
 
       // Also trigger game logic load (important!)
@@ -250,12 +250,12 @@ export async function loadActiveFileContentAndUpdateUI() {
 
     } else {
       logVerbose(`No content found in storage for ${activeFileName}. Clearing UI.`);
-      updatePgnFileDetailsUI(activeFileName, ''); // Clear game list
+      updatePgnFileDetailsUI(activeFileName, '', false); // Clear game list
     }
   } catch (error) {
     console.error(`Error loading content for ${activeFileName}:`, error);
     showNotification(`Error loading content for ${activeFileName}. Check console.`, 'alert');
-    updatePgnFileDetailsUI(activeFileName, '');
+    updatePgnFileDetailsUI(activeFileName, '', false);
   }
 }
 

@@ -1,5 +1,6 @@
 'use strict';
 
+import { logVerbose } from './logging.js';
 /**
  * Parses a PGN string containing multiple games into an array of game objects.
  * Each game object contains the full PGN text for that game and extracted tags.
@@ -70,6 +71,6 @@ export function parsePgn(pgnString) {
     };
   }).filter(game => game !== null); // Filter out any null entries from invalid segments
 
-  console.log(`Parsed ${games.length} games.`);
+  logVerbose(`Parsed ${games.length} games.`);
   return games;
 }
