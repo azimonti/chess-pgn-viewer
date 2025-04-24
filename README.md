@@ -15,7 +15,7 @@ This application allows users to:
 
 For detailed instructions on how to use the application's features, please see the [Help Page](help/index.html) or the [Markdown Help](help.md).
 
-![Chess PGN Viewer](screenshots/app_desktop_0_8.png)
+![Chess PGN Viewer](screenshots/app_desktop_1_0.png)
 
 ## Usage for Development
 
