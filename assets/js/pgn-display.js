@@ -1,9 +1,9 @@
 'use strict';
 
-import { renderBoard, flipBoard, cyclePieceSet } from './board-ui.js';
-import { initializeGame, getCurrentFen, loadPgn, getPgnHeaders, getGameHistory, getGameComments, goToStart, goToPreviousMove, goToNextMove, goToEnd, getCurrentMoveIndex, goToMoveIndex, resetGameView } from './game-logic.js';
-import { updatePgnFileDetailsUI } from './file-management-ui.js';
-import { setActiveFile } from './storage/storage.js';
+import { renderBoard, flipBoard, cyclePieceSet } from './board-ui.js?id=8bbc53';
+import { initializeGame, getCurrentFen, loadPgn, getPgnHeaders, getGameHistory, getGameComments, goToStart, goToPreviousMove, goToNextMove, goToEnd, getCurrentMoveIndex, goToMoveIndex, resetGameView } from './game-logic.js?id=8bbc53';
+import { updatePgnFileDetailsUI } from './file-management-ui.js?id=8bbc53';
+import { setActiveFile } from './storage/storage.js?id=8bbc53';
 
 // --- DOM Element Selectors ---
 const flipBoardButton = $('#btn-flip-board');

@@ -4,12 +4,12 @@
 /* showNotification(i18next.t('notification.disappearingAlert', 'Disappearing alert notification'), 'alert', i18next.t('notification.disappearingAlertTitle', 'Alert')); */
 'use strict';
 
-import { initializeDropboxSync } from './dropbox-sync.js';
+import { initializeDropboxSync } from './dropbox-sync.js?id=8bbc53';
 import { renderBoard } from './board-ui.js';
-import { initializeGame, getCurrentFen } from './game-logic.js';
-import { initializePgnDisplayListeners } from './pgn-display.js';
-import { initializeFileManagementListeners } from './file-management-ui.js';
-import { updateFileSelectionUI, loadActiveFileContentAndUpdateUI } from './storage/files.js';
+import { initializeGame, getCurrentFen } from './game-logic.js?id=8bbc53';
+import { initializePgnDisplayListeners } from './pgn-display.js?id=8bbc53';
+import { initializeFileManagementListeners } from './file-management-ui.js?id=8bbc53';
+import { updateFileSelectionUI, loadActiveFileContentAndUpdateUI } from './storage/files.js?id=8bbc53';
 
 // --- DOM Element Selectors (Minimal) ---
 const chessboardContainer = $('#chessboard'); // Keep for initial render

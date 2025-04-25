@@ -1,7 +1,7 @@
 /* global i18nextBrowserLanguageDetector, i18nextHttpBackend */
 'use strict';
 
-import { logVerbose } from './logging.js';
+import { logVerbose } from './logging.js?id=8bbc53';
 
 // Function to update the content based on loaded translations
 function updateContent() {

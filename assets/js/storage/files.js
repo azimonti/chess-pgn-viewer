@@ -1,8 +1,8 @@
 'use strict';
 
-import { getKnownFiles, getActiveFile, setActiveFile, addKnownFile, renameKnownFile, removeKnownFile, DEFAULT_FILE_PATH, getContentFromStorage } from './storage.js';
-import { logVerbose } from '../logging.js';
-import { updatePgnFileDetailsUI } from '../file-management-ui.js';
+import { getKnownFiles, getActiveFile, setActiveFile, addKnownFile, renameKnownFile, removeKnownFile, getContentFromStorage } from './storage.js?id=8bbc53';
+import { logVerbose } from '../logging.js?id=8bbc53';
+import { updatePgnFileDetailsUI } from '../file-management-ui.js?id=8bbc53';
 
 // DOM Elements
 const fileListSidebar = $('#fileListSidebar');
@@ -83,10 +83,11 @@ export function setupRenameFileModalListeners() {
     event.preventDefault();
     const newFileName = newRenameFileNameInput.val();
     const oldFilePath = getActiveFile();
-    const defaultFileName = DEFAULT_FILE_PATH.substring(DEFAULT_FILE_PATH.lastIndexOf('/') + 1);
 
-    if (oldFilePath === DEFAULT_FILE_PATH) {
-      showNotification(`Error: The default file (${defaultFileName}) cannot be renamed.`, 'alert');
+    // Removed check preventing renaming of default file
+
+    if (!oldFilePath) {
+      showNotification("Error: No active file selected to rename.", 'alert');
       const renameModalElement = document.getElementById('renameFileModal');
       if (renameModalElement) {
         renameFileModalInstance = bootstrap.Modal.getInstance(renameModalElement);
@@ -182,9 +183,8 @@ export function setupRenameFileModalListeners() {
 export function updateFileSelectionUI() {
   logVerbose("Updating file selection UI...");
   const knownFiles = getKnownFiles();
-  const activeFilePath = getActiveFile();
-  const defaultFileName = DEFAULT_FILE_PATH.substring(DEFAULT_FILE_PATH.lastIndexOf('/') + 1);
-  let activeFileName = defaultFileName; // Use default name initially
+  const activeFilePath = getActiveFile(); // Can be null if no files exist or none selected
+  let activeFileName = "No file selected"; // Default header text
 
   fileListSidebar.empty();
 
@@ -215,9 +215,13 @@ export function updateFileSelectionUI() {
     fileListSidebar.append(listItem);
   });
 
+  // Extract the base name by removing the extension
+  const lastDotIndex = activeFileName.lastIndexOf('.');
+  const displayName = lastDotIndex === -1 ? activeFileName : activeFileName.substring(0, lastDotIndex);
+
   // Update the main header text
-  currentFileNameHeader.text(activeFileName);
-  logVerbose(`Active file header text set to: ${activeFileName}`);
+  currentFileNameHeader.text(displayName);
+  logVerbose(`Active file header text set to: ${displayName}`);
 }
 
 
@@ -226,15 +230,23 @@ export function updateFileSelectionUI() {
  * updates the main PGN text area, and refreshes the game details UI.
  */
 export async function loadActiveFileContentAndUpdateUI() {
-  const activeFilePath = getActiveFile();
+  const activeFilePath = getActiveFile(); // Can be null
   const knownFiles = getKnownFiles();
-  const activeFile = knownFiles.find(f => f.path === activeFilePath);
-  const activeFileName = activeFile ? activeFile.name : DEFAULT_FILE_PATH.substring(DEFAULT_FILE_PATH.lastIndexOf('/') + 1);
+  const activeFile = activeFilePath ? knownFiles.find(f => f.path === activeFilePath) : null;
+  const activeFileName = activeFile ? activeFile.name : "No file selected";
 
-  logVerbose(`Loading content for active file: ${activeFileName} (${activeFilePath})`);
+  logVerbose(`Loading content for active file: ${activeFileName} (${activeFilePath || 'None'})`);
+
+  // If there's no active file path, clear the UI and don't try to load content
+  if (!activeFilePath || !activeFile) {
+    logVerbose(`No active file found. Clearing PGN details UI.`);
+    updatePgnFileDetailsUI(activeFileName, '', true); // Clear game list and PGN input
+    // Optionally clear game logic state here if needed
+    return;
+  }
 
   try {
-    const content = await getContentFromStorage(); // Assumes this gets content for the active file
+    const content = await getContentFromStorage(); // Gets content for the active file (which we know exists here)
     if (content !== null) {
       updatePgnFileDetailsUI(activeFileName, content, false); // Update the game list below text area
       logVerbose(`Successfully loaded content for ${activeFileName} and updated UI.`);

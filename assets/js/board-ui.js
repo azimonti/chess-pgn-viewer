@@ -1,6 +1,6 @@
 'use strict';
 
-import { makeMove, getCurrentFen, getPieceAt, getValidMoves, getTurn } from './game-logic.js';
+import { makeMove, getCurrentFen, getPieceAt, getValidMoves, getTurn } from './game-logic.js?id=8bbc53';
 
 // --- Constants ---
 const PIECE_SETS = ['set4', 'set1', 'set2', 'set3'];

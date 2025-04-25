@@ -68,6 +68,10 @@ body.localized {
   }
 }
 
+.btn-file-list{
+  padding: 0.375rem 0.75rem;
+}
+
 .list-group-item {
   display: flex;
   justify-content: space-between;
@@ -425,6 +429,7 @@ body.localized {
   border-color: #2C2C2C;
   width: 42px; /* Set fixed width */
   height: 38px; /* Set fixed height */
+  padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;

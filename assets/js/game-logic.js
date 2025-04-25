@@ -1,7 +1,7 @@
 'use strict';
 
 import { Chess } from './lib/chess-1.2.0.min.js';
-import { getIsBoardFlipped } from './board-ui.js';
+import { getIsBoardFlipped } from './board-ui.js?id=8bbc53';
 
 let chess = null; // The chess.js instance for the *current* position
 let initialFen = null; // FEN of the starting position of the loaded PGN

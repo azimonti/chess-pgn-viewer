@@ -1,10 +1,10 @@
 'use strict';
 
-import { getKnownFiles, getActiveFile, DEFAULT_FILE_PATH, saveContentToStorage, setActiveFile, addKnownFile } from './storage/storage.js';
-import { parsePgn } from './pgn-parser.js';
-import { loadPgn, getPgnHeaders, getGameHistory, getCurrentFen } from './game-logic.js';
-import { displayPgnHeaders, displayPgnMoves, updateBoardAndHighlight } from './pgn-display.js';
-import { setupAddFileModalListeners, setupRenameFileModalListeners, setupDeleteFileConfirmListener, updateFileSelectionUI } from './storage/files.js';
+import { getKnownFiles, getActiveFile, saveContentToStorage, setActiveFile, addKnownFile } from './storage/storage.js?id=8bbc53';
+import { parsePgn } from './pgn-parser.js?id=8bbc53';
+import { loadPgn, getPgnHeaders, getGameHistory, getCurrentFen } from './game-logic.js?id=8bbc53';
+import { displayPgnHeaders, displayPgnMoves, updateBoardAndHighlight } from './pgn-display.js?id=8bbc53';
+import { setupAddFileModalListeners, setupRenameFileModalListeners, setupDeleteFileConfirmListener, updateFileSelectionUI } from './storage/files.js?id=8bbc53';
 
 // --- DOM Element Selectors ---
 const addFileButton = $('#addFileButton');
@@ -96,14 +96,7 @@ export function initializeFileManagementListeners() {
         return;
       }
 
-      if (currentFilePath === DEFAULT_FILE_PATH) {
-        if (window.showNotification && window.i18next) {
-          showNotification(i18next.t('notification.renameDefaultError', 'Error: The default file cannot be renamed.'), 'alert', i18next.t('notification.titleAlert', 'Alert'));
-        } else {
-          alert("Error: The default file cannot be renamed.");
-        }
-        return;
-      }
+      // Removed check preventing renaming of default file
 
       currentFileNameToRename.text(currentFile.name); // Set display name
       newRenameFileNameInput.val(currentFile.name); // Set input value
@@ -131,14 +124,7 @@ export function initializeFileManagementListeners() {
       return;
     }
 
-    if (filePathToDelete === DEFAULT_FILE_PATH) {
-      if (window.showNotification && window.i18next) {
-        showNotification(i18next.t('notification.deleteDefaultError', 'Error: The default file cannot be deleted.'), 'alert', i18next.t('notification.titleAlert', 'Alert'));
-      } else {
-        alert("Error: The default file cannot be deleted.");
-      }
-      return;
-    }
+    // Removed check preventing deletion of default file
 
     // Populate the confirmation modal before showing
     $('#fileNameToDelete').text(fileToDelete.name);

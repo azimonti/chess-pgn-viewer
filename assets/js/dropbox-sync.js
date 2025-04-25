@@ -1,8 +1,8 @@
 'use strict';
 
-import { initializeAuthentication } from './dropbox/auth.js';
-import { initializeOfflineHandling } from './dropbox/offline.js';
-import { initializeSyncCoordinator } from './sync-coordinator.js';
+import { initializeAuthentication } from './dropbox/auth.js?id=8bbc53';
+import { initializeOfflineHandling } from './dropbox/offline.js?id=8bbc53';
+import { initializeSyncCoordinator } from './sync-coordinator.js?id=8bbc53';
 import { logVerbose } from './logging.js';
 
 /**

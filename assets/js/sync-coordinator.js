@@ -1,10 +1,11 @@
 'use strict';
 
-import { getActiveFile, getLocalLastModified, getContentFromStorage, saveContentToStorage, setLastSyncTime } from './storage/storage.js';
-import { getDbxInstance, getDropboxFileMetadata, downloadFileFromDropbox, uploadFileToDropbox } from './dropbox/api.js';
-import { updateSyncIndicator, showConflictModal, SyncStatus } from './dropbox/ui.js';
-import { clearUploadPending, isUploadPending, setUploadPending } from './dropbox/offline.js';
-import { logVerbose } from './logging.js';
+import { getActiveFile, getLocalLastModified, getContentFromStorage, saveContentToStorage, setLastSyncTime } from './storage/storage.js?id=8bbc53';
+import { getDbxInstance, getDropboxFileMetadata, downloadFileFromDropbox, uploadFileToDropbox } from './dropbox/api.js?id=8bbc53';
+import { updateSyncIndicator, showConflictModal, SyncStatus } from './dropbox/ui.js?id=8bbc53';
+import { clearUploadPending, isUploadPending, setUploadPending } from './dropbox/offline.js?id=8bbc53';
+import { logVerbose } from './logging.js?id=8bbc53';
+import { updateFileSelectionUI } from './storage/files.js?id=8bbc53';
 
 let syncDebounceTimer = null;
 const SYNC_DEBOUNCE_DELAY = 3000; // 3 seconds delay before syncing after local change
@@ -79,6 +80,7 @@ export async function coordinateSync() {
         logVerbose(`Local storage (active file) overwritten with Dropbox content for ${activeFilePath}.`);
         finalStatus = SyncStatus.IDLE;
         clearUploadPending(activeFilePath);
+        updateFileSelectionUI(); // Refresh sidebar UI
       } else {
         console.error(`Failed to download Dropbox content for ${activeFilePath} for initial sync.`);
         finalStatus = SyncStatus.ERROR;
@@ -122,6 +124,7 @@ export async function coordinateSync() {
                 logVerbose(`Local storage overwritten with Dropbox content for ${activeFilePath}.`);
                 finalStatus = SyncStatus.IDLE;
                 clearUploadPending(activeFilePath);
+                updateFileSelectionUI(); // Refresh sidebar UI
               } else {
                 console.error(`Failed to download Dropbox content for ${activeFilePath} after conflict resolution.`);
                 alert(`Error: Could not download the selected Dropbox version for ${activeFilePath}.`);
@@ -148,6 +151,7 @@ export async function coordinateSync() {
             setLastSyncTime(activeFilePath);
             logVerbose(`Local storage updated with newer Dropbox content for ${activeFilePath}.`);
             finalStatus = SyncStatus.IDLE;
+            updateFileSelectionUI(); // Refresh sidebar UI
           } else {
             console.error(`Failed to download newer Dropbox content for ${activeFilePath}.`);
             finalStatus = SyncStatus.ERROR;
